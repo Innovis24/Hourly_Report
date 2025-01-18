@@ -1,0 +1,559 @@
+import React, { useState, useEffect } from "react";
+import Select from "react-select";
+import "./Daily_Report.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import DatePicker from "react-datepicker";
+import { format } from "date-fns";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import "react-datepicker/dist/react-datepicker.css";
+import axios from "axios";
+import { FaUser, FaSignOutAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom"; 
+
+const apiUrl = "http://localhost/hourly_report/Daily_Report_api.php";
+
+function DailyReport() {
+  const [startDate, setStartDate] = useState(new Date());
+  const [cashAmount, setCashAmount] = useState("");
+  const [reportedTo, setReportedTo] = useState("");
+  const [cashHolder, setCashHolder] = useState("");
+  const [gPay, setGPay] = useState("");
+  const [gPayHolder, setGPayHolder] = useState("");
+  const [pettyCash, setPettyCash] = useState("");
+  const [reportedToOptions, setReportedToOptions] = useState([]); // State for dropdown options
+  const [cashholderOptions, setCashHolderOptions] = useState([]);
+  const [GPayHolderOptions, setGPayHolderOptions] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [holderCashTaken, setHolderCashTaken] = useState({});
+
+  const [showList, setShowList] = useState(false);
+  const [showsubmit, setSubmitButton] = useState(true);
+  const formattedDate = format(startDate, "yyyy-MM-dd");
+  const [Total, setTotal] = useState("");
+  const [Array, setArray] = useState([
+    {
+      Sno: "",
+      Date: "",
+      Day: "",
+      CashAmount: "",
+      Reportedto: "",
+      CashHolder: "",
+      Gpay: "",
+      GpayHolder: "",
+      PettyCash: "",
+      Total: "",
+      ActualCollection: "",
+      CashTaken: "",
+      TotalCashinTaken: "",
+    },
+  ]);
+
+  const navigate = useNavigate(); // For go to login page the navigate function
+
+  //useeffect - render every page refresh (1st render this function)
+  useEffect(() => {
+    // Fetch options for the "Reported To" dropdown
+    getUserapi()
+    getapi()
+  }, []);
+
+
+  // Cashtaken with Name
+  useEffect(() => {
+    setTimeout(() => {
+      const holderCashTaken = {};
+      Array.forEach((entry) => {
+        if (entry.cashHolder) {
+          if (!holderCashTaken[entry.cashHolder]) {
+            holderCashTaken[entry.cashHolder] = 0;
+          }
+          holderCashTaken[entry.cashHolder] += parseFloat(entry.cashAmount || 0);
+        }
+      });
+      console.log("HolderCashTaken Data:", holderCashTaken);
+      setHolderCashTaken(holderCashTaken);
+    }, 500);
+  }, [Array]);
+
+
+
+
+
+  //get the owner list via api
+  const getUserapi = () => {
+    axios
+      .get(apiUrl + '?action=getUsers') // in this place use two api so mention it(action).
+      .then((response) => {
+        const options = response.data.map((user) => ({
+          value: user.UserID,
+          label: user.UserName,
+        }));
+        setReportedToOptions(options);
+        setCashHolderOptions(options);
+        setGPayHolderOptions(options);
+
+
+      })
+      .catch((error) => console.error("Error fetching users:", error));
+  };
+
+   //get the daily report list via api
+  const getapi = () => {
+    axios
+      .get(apiUrl + '?action=getReports') // in this place use two api so mention it(action).
+      .then((response) => {
+        setArray(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching daily reports:", error);
+        toast.error("Error fetching daily reports");
+      });
+  }
+
+  //get the Day based on given date
+  const getDayName = (dateString) => {
+    const date = new Date(dateString);
+
+    const daysOfWeek = [
+      'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+    ];
+
+    const dayIndex = date.getDay();
+
+    return daysOfWeek[dayIndex];
+  };
+  // Check Already exiting date
+  const handleDateChange = (Date) => {
+    const formattedDate = Date.toISOString().split('T')[0]; // Format the selected date as 'yyyy-mm-dd'
+
+    // Check if the date already exists in the filtered data
+    const filteredval = Array.filter((item) => item.Date === formattedDate);
+
+    if (filteredval.length > 0) {
+      toast.error("You have already entered a value for this " + formattedDate + '.', {
+        autoClose: 500, // Set toast to auto close after 5 seconds (5000 milliseconds)
+      });
+
+      return; // Prevent the date from being set if it's already in filtered data
+    }
+    setStartDate(Date);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    //Check input value is empty or not
+    if (!cashAmount || !reportedTo || !cashHolder || !gPay || !gPayHolder || !pettyCash) {
+
+      toast.error("Please fill in all fields!");
+      return;
+    }
+    else {
+      //if true "create" or false "update"
+      if (showsubmit === true) {        //create a new record
+        const duplicateDate = Array.filter((item) => item.Date === formattedDate)
+        if (duplicateDate.length > 0) {         //Check Already exiting date
+          toast.error("This " + formattedDate + " is already exist");
+          return;
+        }
+        const Total = Number(cashAmount) + Number(gPay) + Number(pettyCash);
+        const currentDay = getDayName(formattedDate);
+        const CashTaken = Number(cashAmount) + Number(gPay);
+        //new entered array
+        const newarray = {
+          Date: formattedDate,
+          Day: currentDay,
+          cashAmount: cashAmount,
+          reportedTo: reportedTo,
+          cashHolder: cashHolder,
+          gPay: gPay,
+          gPayHolder: gPayHolder,
+          PettyCash: pettyCash,
+          Total: Total,
+          ActualCollection: 0,
+          CashTaken: CashTaken,
+          TotalCashinTaken: 0,
+        };
+        //bind the new array to existing array
+        const updatedData = [...Array, newarray];
+        //sort the array
+        const sortedData = updatedData.sort((a, b) => new Date(a.Date) - new Date(b.Date));
+
+        //calculate the amount for passing array in api --  start
+        let cumulativeCashTaken = 0;
+        const processedData = sortedData.map((entry, index) => {
+
+          const currentcashAmount = parseInt(entry.cashAmount || 0);
+          const currentgPay = parseInt(entry.gPay || 0);
+          const currentpettyCash = parseInt(entry.PettyCash || 0);
+          const previousPettyCash = index > 0 ? parseInt(updatedData[index - 1].PettyCash || 0) : 0;
+
+          const ActualCollection = Math.abs((currentcashAmount + currentgPay + currentpettyCash) - previousPettyCash);
+
+          cumulativeCashTaken += parseInt(entry.CashTaken);
+
+          return {
+            ...entry,
+            ActualCollection: ActualCollection.toString(), // Update cashinhand with cumulative amount
+            TotalCashinTaken: cumulativeCashTaken.toString(),
+          };
+        });
+         //calculate the amount for passing array in api --  end
+        console.log(processedData)
+
+        axios
+          .post(apiUrl, processedData)
+          .then((response) => {
+            toast.success("Entry added successfully!");
+            getapi()
+            setShowList(true); // Show the report list
+          })
+          .catch((error) => {
+            console.error("Error adding entry:", error);
+            toast.error("Error adding entry");
+          });
+      }
+      else {        //update the exist record
+        const Total = Number(cashAmount) + Number(gPay) + Number(pettyCash);
+        const currentDay = getDayName(formattedDate);
+        const CashTaken = Number(cashAmount) + Number(gPay);
+          //current update array
+        let newArray1 = {
+          Date: formattedDate,
+          Day: currentDay,
+          cashAmount: cashAmount,
+          reportedTo: reportedTo,
+          cashHolder: cashHolder,
+          gPay: gPay,
+          gPayHolder: gPayHolder,
+          PettyCash: pettyCash,
+          Total: Total,
+          ActualCollection: 0,
+          CashTaken: CashTaken,
+          TotalCashinTaken: 0,
+        };
+
+
+        const updatedData = [...Array];  // Clone the data array to avoid direct mutation
+        //check if the given update array in exist or not
+        const recordIndex = updatedData.findIndex((record) => record.Date === newArray1.Date);
+
+        //if not exist then add the current update array to existing array
+        if (recordIndex !== -1) {
+          updatedData[recordIndex] = { ...updatedData[recordIndex], ...newArray1 };
+        }
+        const sortedData = updatedData.sort((a, b) => new Date(a.Date) - new Date(b.Date));
+
+        //calculate the amount for passing array in api --  start
+        let cumulativeCashTaken = 0;
+        const processedData = sortedData.map((entry, index) => {
+
+
+          const currentCashTaken = parseInt(entry.CashTaken || 0);
+          const currentcashAmount = parseInt(entry.cashAmount || 0);
+          const currentgPay = parseInt(entry.gPay || 0);
+          const currentpettyCash = parseInt(entry.PettyCash || 0);
+
+          const previousPettyCash = index > 0 ? parseInt(sortedData[index - 1].PettyCash || 0) : 0;
+
+          const ActualCollection = Math.abs((currentcashAmount + currentgPay + currentpettyCash) - previousPettyCash);
+
+          cumulativeCashTaken += currentCashTaken;
+
+          // Return the updated record with recalculated values
+          return {
+            ...entry,
+            ActualCollection: ActualCollection.toString(), // Update cashinhand with cumulative amount
+            TotalCashinTaken: cumulativeCashTaken.toString(),
+          };
+        });
+          //calculate the amount for passing array in api --  end
+        console.log(processedData)
+        axios
+          .put(apiUrl, processedData)
+          .then((response) => {
+            toast.success("Entry update successfully!");
+            getapi()
+            setShowList(true); // Show the report list
+          })
+          .catch((error) => {
+            console.error("Error adding entry:", error);
+            toast.error("Error adding entry");
+          });
+
+      }
+      setCashAmount('')
+      setReportedTo()
+      setCashHolder()
+      setGPay()
+      setGPayHolder()
+      setPettyCash()
+    }
+
+  }
+
+  const handleDelete = async (e, item) => {
+    // alert(item.Date)
+    try {
+      const response = await axios.delete(apiUrl, {
+        data: { Date: item.Date },
+      });
+      if (response.status == 200) {
+        toast.success("Data delete successfully!");
+        getapi()
+      } else if (response.data.error) {
+        alert(response.data.error);
+      }
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting record:", error);
+    }
+  };
+
+  //once delete ,update ,add then call this fetchdata to update the list screen
+  //In fetch data call Get api 
+  const fetchData = async () => {
+    try {
+      axios
+        .get(apiUrl)
+        .then((response) => {
+          const formattedDate = format(startDate, "yyyy-MM-dd"); // Format the selected date
+          const filtered = response.data.filter((item) => item.Date === formattedDate); // Filter by date
+          setFilteredData(filtered);
+
+        })
+        .catch((error) => console.error("Error fetching users:", error));
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  //In this function set the current edit value in input field
+  const handleUpdate = (e, item) => {
+    e.preventDefault();
+    setShowList(false); //open create form
+    setSubmitButton(false); //set submit button
+    setStartDate(item.Date);
+    getDayName(item.Day);
+    setCashAmount(item.cashAmount);
+    setGPayHolder(item.gPayHolder);
+    setReportedTo(item.reportedTo);
+    setCashHolder(item.cashHolder);
+    setGPay(item.gPay);
+    setPettyCash(item.PettyCash);
+  };
+
+  const showlistitem = () => {
+    setShowList(true); //open list form
+  };
+  const showback = () => {
+    setShowList(false); //open list form
+    setSubmitButton(true)
+  };
+  const handleExit = () => {
+    // Redirect to the login page
+    navigate("/"); // Adjust the path based on your routing setup
+  };
+
+  return (
+    <div>
+      <ToastContainer />
+      <div className="App2">
+        <div className="header_font2"><b>DAILY REPORT</b><div className="header_buttons">
+            <button className="icon_button" title="Logged-in User">
+              <FaUser size={20} />
+            </button>
+            <button
+              className="icon_button"
+              title="Exit"
+              onClick={handleExit} // Add click handler
+            >
+              <FaSignOutAlt size={20} />
+            </button>
+          </div></div>
+
+        {showList === false && (
+          <button className="listbtn submitbutton" onClick={showlistitem}>
+            DailyReport List
+          </button>
+        )}
+
+        {showList === false && (
+          <div className="card_design2">
+            <form onSubmit={handleSubmit}>
+              <div className="body_padding2">
+                <DatePicker
+                  selected={startDate}
+                  dateFormat="yyyy-MM-dd"
+                  // minDate={new Date()}
+                  maxDate={new Date()}
+                  onChange={handleDateChange}
+                  showIcon
+                />
+
+                <div className="body3 row_align">
+                  <span>Cash Amount</span>
+                  <input
+                    type="number"
+                    className="form-input"
+                    value={cashAmount}
+                    onChange={(e) => setCashAmount(e.target.value)}
+                  />
+                </div>
+
+                <div className="body3 row_align1">
+                  <span>Reported To</span>
+                  <Select
+                    options={reportedToOptions} // Options for dropdown
+                    value={reportedTo ? { value: reportedTo, label: reportedTo } : null} // Current value
+                    onChange={(selectedOption) => setReportedTo(selectedOption.label)} // Update state on select
+                    placeholder="Select a person"
+                    isSearchable // Makes the dropdown searchable
+                    className="form-select"
+                  />
+                </div>
+
+                <div className="body3 row_align1">
+                  <span>Cash Holder</span>
+                  <Select
+                    options={cashholderOptions} // Options for dropdown
+                    value={cashHolder ? { value: cashHolder, label: cashHolder } : null} // Current value
+                    onChange={(selectedOption) => setCashHolder(selectedOption.label)} // Update state on select
+                    placeholder="Select a person"
+                    isSearchable // Makes the dropdown searchable
+                    className="form-select"
+                  />
+                </div>
+                <div className="body3 row_align">
+                  <span>G-Pay</span>
+                  <input
+                    type="number"
+                    className="form-input2"
+                    value={gPay}
+                    onChange={(e) => setGPay(e.target.value)}
+                  />
+                </div>
+
+                <div className="body3 row_align1">
+                  <span>GPay Holder</span>
+                  <Select
+                    options={GPayHolderOptions} // Options for dropdown
+                    value={gPayHolder ? { value: gPayHolder, label: gPayHolder } : null} // Current value
+                    onChange={(selectedOption) => setGPayHolder(selectedOption.label)} // Update state on select
+                    placeholder="Select a person"
+                    isSearchable // Makes the dropdown searchable
+                    className="form-select"
+                  />
+                </div>
+
+                <div className="body2 row_align">
+                  <span>Pettycash</span>
+                  <input
+                    type="number"
+                    value={pettyCash}
+                    className="form-input"
+                    onChange={(e) => setPettyCash(e.target.value)}
+                  />
+                </div>
+              </div>
+              {showList === false && (
+                <button type="submit" className="submitbutton submit_margin_btm">
+                  {showsubmit === false ? "Update" : "Submit"}
+                </button>
+              )}
+            </form>
+          </div>
+        )}
+        {showList === true && (
+          <div>
+            <div> </div>
+            <button className="listbtn submitbutton" onClick={showback}>
+              Back
+            </button>
+            <div className="card-container2">
+              {Object.entries(holderCashTaken).length > 0 ? (
+                Object.entries(holderCashTaken).map(([cashHolder, total], index) => (
+                  <div className="card2" key={index}>
+                    <div>
+                      <div className="cashtaken">CashTaken : </div>
+                      <div className="cashholder">{cashHolder}</div>
+                      <div className="total"> ₹ <span className="txt_wrap">{total}</span></div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="no-cards">No Cash Taken Data Found</div>
+              )}
+            </div>
+
+
+<center>
+            <table className="padding_top2">
+              <thead className="table_header2">
+                <tr>
+                  <th>S. No</th>
+                  <th>Date</th>
+                  <th>Day</th>
+                  <th>Cash Amount</th>
+                  <th>Reported To</th>
+                  <th>Cash Holder</th>
+                  <th>G-Pay</th>
+                  <th>G-Pay Holder</th>
+                  <th>Petty Cash</th>
+                  <th>Total</th>
+                  <th>ActualCollection</th>
+                  <th>CashTaken</th>
+                  <th>TotalCashinTaken</th>
+                  <th>Action</th>
+                </tr>
+                {/* <tr></tr> */}
+              </thead>
+              <tbody>
+                {Array.length > 0 ? (
+                  Array.map((item, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{item.Date}</td>
+                      <td>{item.Day}</td>
+                      <td>{item.cashAmount}</td>
+                      <td>{item.reportedTo}</td>
+                      <td>{item.cashHolder}</td>
+                      <td>{item.gPay}</td>
+                      <td>{item.gPayHolder}</td>
+                      <td>{item.PettyCash}</td>
+                      <td>{item.Total}</td>
+                      <td>{Math.abs(item.ActualCollection)}</td>
+                      <td>{Math.abs(item.CashTaken)}</td>
+                      <td>{Math.abs(item.TotalCashinTaken)}</td>
+
+                      <td>
+
+                        <FaEdit
+                          className="iconPaddig"
+                          onClick={(e) => handleUpdate(e, item)}
+                        />
+                        <FaTrashAlt
+                          className="iconPaddig"
+                          onClick={(e) => handleDelete(e, item)}
+                        />
+                      </td>
+                    </tr>
+
+
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="14" className="center_align">No records found</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            </center>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+export default DailyReport;

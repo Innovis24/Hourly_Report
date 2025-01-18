@@ -1,0 +1,529 @@
+*{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;   
+}
+
+.header_font{
+    height: 60px;
+    color: white;
+    background-color: #1995AD;
+    padding-top: 26px;
+    font-size: 26px;
+    display: flex;
+    flex-direction: column;
+
+}
+
+/* input tsype */
+
+.form-group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+
+  }
+.form-input {
+    width:auto;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid black;
+    border-radius: 4px;
+
+  }
+.time_wt{
+    width: auto !important;
+
+  }
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Spacing between fields in the same row */
+  }  
+  .submitbutton {
+    background-color: #1995AD; /* Primary button color */
+    color: white; /* Button text color */
+    width: auto;
+    height: 40px; /* Slightly taller button for better visibility */
+    padding: 0 20px; /* Add horizontal padding for a balanced look */
+    border-radius: 20px; /* Smooth, pill-shaped corners */
+    border: none;
+    font-size: 16px; /* Slightly larger font size */
+    font-family: 'Poppins', sans-serif; /* Modern, clean font */
+    font-weight: 500; /* Slightly bold text */
+    letter-spacing: 0.5px; /* Add slight spacing for elegance */
+    margin-top: 2%;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Smooth transitions for multiple properties */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  
+  .submitbutton:hover {
+    background-color: #126e8c; /* Darker color on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Deeper shadow for hover effect */
+    transform: translateY(-2px); /* Lift button slightly on hover */
+  }
+  
+  .submitbutton:active {
+    background-color: #0e4c63; /* Even darker color on click */
+    transform: translateY(0); /* Remove lift effect */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2); /* Reduced shadow */
+  }
+  
+  .submit_margin_btm {
+    margin-bottom: 14px;
+  }
+  
+  .listbtn {
+    background-color: #126e8c; /* Secondary button color */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .listbtn:hover {
+    background-color: #1995AD; /* Lighten color on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Hover shadow effect */
+    transform: translateY(-2px);
+  }
+  
+  .listbtn:active {
+    background-color: #0e4c63; /* Active state color */
+    transform: translateY(0);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+.listbtn{
+        display: flex;
+        margin-left: auto;
+        font-size: 14px;
+        margin-top: 10px;
+        margin-right: 25px;
+        padding: 5px;
+        border: none !important;
+  }
+table {
+    width: 80%;
+    font-size: 14px;
+}
+.table_align2{
+    display: flex;
+    justify-content: center;
+}
+
+.table_header3 {
+  background-color: #1995AD;
+  color: white;
+  font-size: 16px;
+  text-align: left;
+  font-weight: bold;
+}
+
+th, td {
+   
+    text-align: left; 
+    border: 1px solid #ddd; 
+}
+
+/* for table design */
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+} 
+
+tbody tr:hover {
+  background-color: #d9f2f8; 
+  transition: background-color 0.3s ease-in-out;
+}
+
+.iconPaddig {
+  padding: 10px;
+  cursor: pointer;
+  color: #1995AD; /* Matches the theme */
+  font-size: 18px;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.iconPaddig:hover {
+  color: #126e8c; 
+  transform: scale(1.2); 
+}
+.center_align {
+  text-align: center;
+  font-size: 16px;
+  color: #888; /* Subtle gray color for empty state */
+}
+/* Scrollable table for smaller screens */
+
+
+/* extra small device */
+@media (max-width: 576px) {
+  .card_design3{
+    width: 80% !important;
+    margin-top: 15px !important;;
+}
+}
+/* small device */
+@media (min-width: 577px) and (max-width: 768px) {
+  .card_design3{
+    width: 80% !important;
+    margin-top: 15px !important;
+}
+}
+/* medium device */
+@media (min-width: 769px) and (max-width: 992px) {
+  .card_design3{
+    width: 50% !important;
+    margin-top: 15px !important;
+}
+}
+/* large device */
+ @media (min-width: 993px) and (max-width: 1200px) {
+  .card_design3{
+    width: 25% !important;
+
+}
+}
+/* extra large device */
+@media (min-width: 1201px) {
+  .card_design3{
+    width: 25% !important;
+
+}
+}
+
+
+.card_design3{
+    border: 1px solid #D3D3D3;
+    display: flex;
+    justify-content: center;
+    width: 58%;
+    margin: auto;
+    border-radius: 12%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
+  }
+.body_padding3 {
+    padding: 25px;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    gap: 20px; /* Add spacing between elements */
+    justify-content: center;
+    width: auto;
+}
+
+.row_align{
+    display: flex;
+    flex-direction: column;
+    padding: 3px;
+  }
+.txt_transform{
+    text-transform: none;
+  }
+.scrollit {
+    /* overflow-y: scroll;
+    height: 389px;
+    width: 75%; */
+    /* overflow-y: scroll; */
+    /* height: 389px; */
+    margin:30px;
+    width: auto;  
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+}
+.iconPaddig{
+  padding: 7px;
+  cursor: pointer;
+}
+.HeadingPaddig{
+  padding: 7px;
+}
+.center_align{
+  text-align: center;
+}
+
+.padding_top3{
+    width: 60%;
+    justify-content: center; 
+    align-items: center; 
+    margin: 0; 
+}
+@keyframes slideInUp {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+    /* Datepicker Styling*/
+    /* Date Picker styling */
+  .react-datepicker-wrapper {
+    display: flex;
+    flex-direction: column;
+    
+  }
+    
+.react-datepicker__day {
+    color: #1870c2;
+    font-size: 14px;
+    text-align: center;
+    transition: background-color 0.2s ease;
+  }
+  
+  /* Highlight selected day */
+.react-datepicker__day--selected {
+    background-color: #1995AD;
+    color: white;
+    border-radius: 50%;
+    font-weight: bold;
+  }
+  
+  /* Style for hovered day */
+.react-datepicker__day:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+  }
+  
+  /* Disable previous days */
+  .react-datepicker__day--disabled {
+    background-color: #e0e0e0;
+    color: #b0b0b0;
+  }
+  
+  /* Styling for today’s date */
+  .react-datepicker__day--today {
+    font-weight: bold;
+    border: 2px solid #1995AD;
+    background-color: #e6f7ff;
+  }
+  
+  /* Customizing the select dropdown */
+  select {
+    background-color:  #1995AD;  
+    color: #333;  
+    border: 1px solid #1995AD; 
+    border-radius: 5px;  
+    padding: 8px 12px;  
+    font-size: 14px;  
+    transition: background-color 0.3s ease, border 0.3s ease; 
+  }
+  
+  
+  select:hover {
+    background-color: #126e8c;  
+    border-color: #126e8c;  
+  }
+  
+  
+  select:focus {
+    outline: none;  
+    border-color: #1995AD;  
+    background-color: #126e8c;  
+   
+  }
+  .app-container {
+    display: flex;
+  }
+  
+  .content {
+    margin-left: 250px; /* Adjust based on sidebar width */
+    padding: 20px;
+    width: calc(100% - 250px);
+  }
+  /* Table */
+  table {
+      width: 100%;
+      font-size: 14px;
+  }
+  
+  .table_header3 {
+    background-color: #1995AD;
+    color: white;
+    font-size: 16px;
+    text-align: left;
+    font-weight: bold;
+  }
+  
+    th, td {
+     
+      text-align: center; 
+      border: 1px solid #ddd; 
+  }
+  
+  /* for table design */
+  tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  } 
+  
+  tbody tr:hover {
+    background-color: #d9f2f8; /* Slight blue highlight on hover */
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  
+  /* Table top Input Box */
+.card3 {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s; 
+   
+  }
+  
+  .card3:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+  
+  .card3-container {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 20px; 
+    justify-content: center; 
+    align-items: center;
+  }
+  
+  .card3 {
+    background-color: #f8f9fa; /* Optional styling for card background */
+
+    
+    
+    border-radius: 10px; /* Optional rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow effect */
+    padding: 20px;
+    width: 120px; /* Set a fixed width for cards */
+    text-align: center;
+    padding: 10px;
+  }
+  
+  .cashtaken{
+    font-size: 16px;
+    font-weight: 400;
+    }
+  .cashholder{
+    font-size: 16px;
+    font-weight: 600;
+  
+  }
+  .total{
+    font-size: 24px;
+    font-weight: 800;
+  
+  }
+  
+  .txt_wrap{
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+
+
+.react-datepicker__close-icon{
+    background-color: transparent;
+    border: 0;
+    outline: 0;
+    padding: 0 6px 0 0;
+    position: absolute;
+    top: 0;
+    right: 44%;
+    height: 100%;
+}
+.body3.row_align1 {
+  background: white; 
+  border: 1px solid black; 
+  border-radius: 5px; 
+  margin-bottom: 10px; 
+}
+
+.listbtn.submitbutton {
+  display: flex; /* Use flexbox for centering */
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+  background-color: #1995AD; /* Primary button color */
+  color: white; /* Text color */
+  height: 45px; /* Slightly taller for a prominent look */
+  padding: 0 25px; /* Adequate horizontal padding for longer text */
+  border-radius: 25px; /* Smooth pill-shaped corners */
+  border: none; /* No border for clean look */
+  font-size: 16px; /* Modern font size */
+  font-family: 'Poppins', sans-serif; /* Consistent font choice */
+  font-weight: 500; /* Medium font weight for readability */
+  letter-spacing: 0.5px; /* Slight letter spacing for elegance */
+  cursor: pointer; /* Pointer cursor for interactivity */
+  transition: all 0.3s ease; /* Smooth transitions */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.listbtn.submitbutton:hover {
+  background-color: #126e8c; /* Darker color for hover effect */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Enhance shadow on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.listbtn.submitbutton:active {
+  background-color: #0e4c63; /* Darkest shade for active state */
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
+  transform: translateY(0); /* No lift when clicked */
+}
+
+.listbtn.submitbutton:focus {
+  outline: none; /* Remove default focus outline */
+  box-shadow: 0 0 5px #1995AD; /* Subtle glow for focus state */
+}
+/* for the input box*/
+
+.input_position{
+  z-index: -1;
+    position: relative;
+}
+
+.itemname_align{
+  width: 87%;
+  margin-left: 11px;
+}
+
+.amount_align{
+  margin-left: 7px;
+  width: 81%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+/* Login & Exit Button */
+
+.header_buttons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+}
+
+.icon_button {
+  background-color: #ffffff;
+  border: 2px solid #1995AD; /* Add a border color */
+  color: #1995AD; /* Icon color */
+  cursor: pointer;
+  outline: none;
+  padding: 10px;
+  border-radius: 50%; /* Circular button */
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.icon_button:hover {
+  background-color: #ffffff; /* Change background on hover */
+  color: #1995AD; /* Icon color on hover */
+  border-color: #1995AD; /* Darker border on hover */
+  transform: scale(1.1); /* Slight zoom effect */
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+}
+
+.icon_button:active {
+  transform: scale(0.95); /* Button press effect */
+  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2);
+}
