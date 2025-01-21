@@ -62,8 +62,13 @@
     font-size: 14px;
     border: 1px solid black;
     border-radius: 4px;
-    
-
+  }
+  .form-input2{
+    width:auto;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid black;
+    border-radius: 4px;
   }
   .time_wt{
     width: auto !important;
@@ -415,4 +420,31 @@ tbody tr:hover {
 .icon_button:active {
   transform: scale(0.95); 
   box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2);
+}
+.menu_card {
+  position: absolute;
+  top: 60px; /* Adjust to position below the user icon */
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  width: 128px;
+  z-index: 10;
+}
+.card-contents {
+  margin-top: 16px;
+}
+.menu-alignment{
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+  
+}
+.logout_alignment{
+  border: none;
+    background: none;
+    margin-left: 10px;
+    font-size: 15px;
 }

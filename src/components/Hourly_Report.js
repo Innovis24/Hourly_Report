@@ -32,6 +32,7 @@ function HourlyReport() {
   const getIDFormat = format(startDate, "yyyyMMdd");
   const [getRecentCash, setRecentCash] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+ const [currentuser, setcurrentuser] = useState();
   const [Array, setArray] = useState([
     {
       ID: "",
@@ -50,6 +51,8 @@ function HourlyReport() {
   useEffect(() => {
     // Update filtered data state
     getapi();
+    const value = localStorage.getItem('currentUsername');
+    setcurrentuser(value)
   }, []);
 
 
@@ -166,7 +169,8 @@ function HourlyReport() {
       startTime === "" ||
       Pettycash === "" ||
       AmountTaken === "" ||
-      startDate === ""
+      startDate === "" ||
+      startDate === null
     ) {
       notify();
       return;
@@ -360,7 +364,9 @@ function HourlyReport() {
 
   const handleExit = () => {
     // Redirect to the login page
-    navigate("/"); // Adjust the path based on your routing setup
+    localStorage.clear();
+      navigate("/")
+   
   };
 
   return (
@@ -369,12 +375,13 @@ function HourlyReport() {
 
       <div className="App">
         <div className="header_font"><b>HOURLY REPORT</b>  <div className="header_buttons">
-    <button className="icon_button" title="Logged-in User">
-      <FaUser size={20} />
+    <button className="icon_button user_border_radius" title={currentuser}>
+    {/* <FaUser size={20} /> */}
+    {currentuser}
     </button>
     <button
               className="icon_button"
-              title="Exit"
+              title="Logout"
               onClick={handleExit} // Add click handler
             >
       <FaSignOutAlt size={20} />

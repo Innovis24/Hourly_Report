@@ -31,6 +31,8 @@ function DailyReport() {
   const [showsubmit, setSubmitButton] = useState(true);
   const formattedDate = format(startDate, "yyyy-MM-dd");
   const [Total, setTotal] = useState("");
+  const [openpopup, setopenpopup] = useState();
+  const [currentuser, setcurrentuser] = useState();
   const [Array, setArray] = useState([
     {
       Sno: "",
@@ -56,6 +58,8 @@ function DailyReport() {
     // Fetch options for the "Reported To" dropdown
     getUserapi()
     getapi()
+    const value = localStorage.getItem('currentUsername');
+    setcurrentuser(value)
   }, []);
 
 
@@ -125,6 +129,9 @@ function DailyReport() {
   };
   // Check Already exiting date
   const handleDateChange = (Date) => {
+    if(Date === null){
+      return
+    }
     const formattedDate = Date.toISOString().split('T')[0]; // Format the selected date as 'yyyy-mm-dd'
 
     // Check if the date already exists in the filtered data
@@ -304,7 +311,7 @@ function DailyReport() {
       } else if (response.data.error) {
         alert(response.data.error);
       }
-      fetchData();
+      // fetchData();
     } catch (error) {
       console.error("Error deleting record:", error);
     }
@@ -312,22 +319,22 @@ function DailyReport() {
 
   //once delete ,update ,add then call this fetchdata to update the list screen
   //In fetch data call Get api 
-  const fetchData = async () => {
-    try {
-      axios
-        .get(apiUrl)
-        .then((response) => {
-          const formattedDate = format(startDate, "yyyy-MM-dd"); // Format the selected date
-          const filtered = response.data.filter((item) => item.Date === formattedDate); // Filter by date
-          setFilteredData(filtered);
+  // const fetchData = async () => {
+  //   try {
+  //     axios
+  //       .get(apiUrl)
+  //       .then((response) => {
+  //         const formattedDate = format(startDate, "yyyy-MM-dd"); // Format the selected date
+  //         const filtered = response.data.filter((item) => item.Date === formattedDate); // Filter by date
+  //         setFilteredData(filtered);
 
-        })
-        .catch((error) => console.error("Error fetching users:", error));
+  //       })
+  //       .catch((error) => console.error("Error fetching users:", error));
 
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
   //In this function set the current edit value in input field
   const handleUpdate = (e, item) => {
@@ -350,28 +357,49 @@ function DailyReport() {
   const showback = () => {
     setShowList(false); //open list form
     setSubmitButton(true)
+      setCashAmount('')
+      setReportedTo()
+      setCashHolder()
+      setGPay()
+      setGPayHolder()
+      setPettyCash()
   };
   const handleExit = () => {
-    // Redirect to the login page
-    navigate("/"); // Adjust the path based on your routing setup
+    localStorage.clear();
+    navigate("/")
   };
+  const OpenUser=()=>{
+    setopenpopup(!openpopup);
+  }
 
   return (
     <div>
       <ToastContainer />
       <div className="App2">
         <div className="header_font2"><b>DAILY REPORT</b><div className="header_buttons">
-            <button className="icon_button" title="Logged-in User">
-              <FaUser size={20} />
+            <button className="icon_button user_border_radius" type="submit"   title={currentuser} onClick={OpenUser}>
+              {/* <FaUser size={20} /> */}
+              {currentuser}
             </button>
             <button
               className="icon_button"
-              title="Exit"
+              title="Logout" type="submit" 
               onClick={handleExit} // Add click handler
             >
               <FaSignOutAlt size={20} />
             </button>
           </div></div>
+          {/* {openpopup && (
+          <div className="menu_card ">
+            <div className="menu-alignment" onClick={handleExit}>
+            <FaSignOutAlt size={20} />
+            <button className="logout_alignment" >
+              Logout
+            </button>
+            </div>
+          </div>
+        )} */}
+
 
         {showList === false && (
           <button className="listbtn submitbutton" onClick={showlistitem}>
@@ -510,7 +538,7 @@ function DailyReport() {
                 {/* <tr></tr> */}
               </thead>
               <tbody>
-                {Array.length > 0 ? (
+                {Array.length > 0 && Array[0].Sno !== '' ? (
                   Array.map((item, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
@@ -552,6 +580,7 @@ function DailyReport() {
             </center>
           </div>
         )}
+       
       </div>
     </div>
   );

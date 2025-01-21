@@ -21,8 +21,10 @@ function DailyExpenditure() {
   const [dataArray, setDataArray] = useState([]);
   const [Itemnameoptions, setItemnameoptions] = useState([]);
   const formattedDate = format(startDate, "yyyy-MM-dd");
-  const [filterDate, setFilterDate] = useState(null); // Filter date for the table
+  const [filterDate, setFilterDate] = useState(); // Filter date for the table
   const [totalAmount, setTotalAmount] = useState(0);
+  const [currentuser, setcurrentuser] = useState();
+  
 
   const [Array, setArray] = useState([
       {
@@ -37,6 +39,8 @@ function DailyExpenditure() {
   useEffect(() => {
     fetchApiData(); // Fetch expenditure data
     getUserapi(); // Fetch item list
+    const value = localStorage.getItem('currentUsername');
+    setcurrentuser(value)
   }, []);
   useEffect(() => {
     fetchApiData();
@@ -95,7 +99,7 @@ function DailyExpenditure() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formattedDate || !Itemname || !amount) {
+    if (!formattedDate || !Itemname || !amount || formattedDate === "1970-01-01") {
       toast.error("Please fill in all fields!");
       return;
     }
@@ -147,8 +151,8 @@ function DailyExpenditure() {
   };    
 
   const handleExit = () => {
-    // Redirect to the login page
-    navigate("/"); // Adjust the path based on your routing setup
+    localStorage.clear();
+    navigate("/")
   };
 
   return (
@@ -156,12 +160,13 @@ function DailyExpenditure() {
       <ToastContainer />
       <div className="App">
         <div className="header_font"><b>DAILY EXPENDITURE</b><div className="header_buttons">
-                    <button className="icon_button" title="Logged-in User">
-                      <FaUser size={20} />
+                    <button className="icon_button user_border_radius" title={currentuser}>
+                      {/* <FaUser size={20} /> */}
+                      {currentuser}
                     </button>
                     <button
               className="icon_button"
-              title="Exit"
+              title="Logout"
               onClick={handleExit} // Add click handler
             >
                       <FaSignOutAlt size={20} />
@@ -275,9 +280,10 @@ function DailyExpenditure() {
             </div>
             </center>
           </div>
-         
-
         )}
+
+      
+
       </div>
  </div>
   )

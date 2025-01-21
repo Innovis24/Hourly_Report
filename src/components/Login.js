@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Container = styled.div`
   display: flex;
@@ -89,64 +92,83 @@ const SubmitButton = styled.button`
   }
 `;
 
-const RegisterLink = styled.div`
-  margin-top: 25px; /* More space above */
-  font-size: 16px; /* Slightly larger text */
-  color: #555;
+// const RegisterLink = styled.div`
+//   margin-top: 25px; /* More space above */
+//   font-size: 16px; /* Slightly larger text */
+//   color: #555;
 
-  a {
-    color: #1d8ea5;
-    text-decoration: none;
-    font-weight: bold;
+//   a {
+//     color: #1d8ea5;
+//     text-decoration: none;
+//     font-weight: bold;
 
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-`;
-
-const ErrorMessage = styled.p`
-  color: red;
-  font-size: 14px;
-  margin-top: 10px;
-`;
+//     &:hover {
+//       text-decoration: underline;
+//     }
+//   }
+// `;
 
 
+
+const apiUrl = "http://localhost/hourly_report/Login.php";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [Array, setArray] = useState([]);
+  const [currentuser, setcurrentuser] = useState([]);
   const navigate = useNavigate();
+
+   useEffect(() => {
+    getapi();
+   }, []);
+   
+  
+    const getapi = () => {
+      axios
+      .get(apiUrl)
+      .then((response) => {
+        setArray(response.data);
+        setcurrentuser(response.data[0].UserName)
+      })
+      .catch((error) => console.error("Error fetching users:", error));
+    }
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const response = await fetch("http://localhost/hourly_report/Login.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.isValid) {
-        console.log("Login successful:", data);
-        navigate("/"); // Navigate to the home page
-      } else {
-        // Login failed
-        setError(data.message || "Invalid username or password");
-      }
-    } catch (error) {
-      setError("Something went wrong. Please try again later.");
-      console.error("Login error:", error);
+    if(username === '' && password ===''){
+      toast.error("Please enter username and password");
+      return;
     }
+    if(username === '' && password !==''){
+      toast.error("Please enter username ");
+      return;
+    }
+    if(username !== '' && password === ''){
+      toast.error("Please enter password");
+      return;
+    }
+    const filtered = Array.filter((item) => item.UserName === username); 
+    if(filtered.length > 0 ){
+      const filtered = Array.filter((item) => item.Password === password && item.Status === "Active"); 
+      if(filtered.length>0){
+        // onLogin();
+        localStorage.setItem('currentUsername',currentuser);
+        navigate("/hourly_report");
+      }
+      else{
+        toast.error("Your username or password is incorrect. Kindly check it.");
+    }
+    }
+    else{
+        toast.error("Your username or password is incorrect. Kindly check it.");
+    }
+         // Navigate to the home page
   };
   
   return (
     <Container>
+        <ToastContainer />
       <Form onSubmit={handleSubmit}>
         <Title>Login</Title>
         <FormGroup>
@@ -157,8 +179,9 @@ function Login() {
             name="username"
             placeholder="Enter your username"
             value={username}
+            autoComplete="off"
             onChange={(e) => setUsername(e.target.value)}
-            required
+            
           />
         </FormGroup>
         <FormGroup>
@@ -170,11 +193,11 @@ function Login() {
             placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
+            
           />
         </FormGroup>
         <SubmitButton type="submit">Login</SubmitButton>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
+       
       </Form>
     </Container>
   );

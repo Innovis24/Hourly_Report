@@ -40,12 +40,16 @@ function Home() {
             </div>
           )}
            {isSidebarOpen && searchParams && (
-            <button
+            <div>
+              <button
               className="sidebar-toggle-button-open"
               onClick={toggleSidebar}
             >
-              ☰
+              ☰ 
             </button>
+            </div>
+           
+            
           )}
     </div>
   );
