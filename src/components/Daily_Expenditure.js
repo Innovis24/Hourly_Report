@@ -41,6 +41,10 @@ function DailyExpenditure() {
     getUserapi(); // Fetch item list
     const value = localStorage.getItem('currentUsername');
     setcurrentuser(value)
+    if(value === '' || value === null || value === undefined){
+      navigate("/");
+      return;
+    }
   }, []);
   useEffect(() => {
     fetchApiData();

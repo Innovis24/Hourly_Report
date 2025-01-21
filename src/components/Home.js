@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./Home.css";
+import { useNavigate } from "react-router-dom"; 
 
 function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -8,7 +9,14 @@ function Home() {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-
+ const navigate = useNavigate(); 
+  useEffect(() => {
+    const value = localStorage.getItem('currentUsername');
+    if(value === '' || value === null || value === undefined){
+      navigate("/");
+      return;
+    }
+  }, []);
 
 
   return (
