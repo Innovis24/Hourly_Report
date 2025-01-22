@@ -8,8 +8,9 @@ import { format } from "date-fns";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
-import { FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaSignOutAlt,FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; 
+import LoadingOverlay from 'react-loading-overlay';
 
 const apiUrl = "http://localhost/hourly_report/Daily_Report_api.php";
 
@@ -33,6 +34,7 @@ function DailyReport() {
   const [Total, setTotal] = useState("");
   const [openpopup, setopenpopup] = useState();
   const [currentuser, setcurrentuser] = useState();
+  const [loading, setLoading] = useState(false);
   const [Array, setArray] = useState([
     {
       Sno: "",
@@ -50,20 +52,25 @@ function DailyReport() {
       TotalCashinTaken: "",
     },
   ]);
-
+  const CustomSpinner = () => (
+    <div style={{ color: 'black', fontSize: '30px' }}>
+     < FaSpinner />
+    </div>
+  );
   const navigate = useNavigate(); // For go to login page the navigate function
 
   //useeffect - render every page refresh (1st render this function)
   useEffect(() => {
     // Fetch options for the "Reported To" dropdown
-    getUserapi()
-    getapi()
+    
     const value = localStorage.getItem('currentUsername');
     setcurrentuser(value)
     if(value === '' || value === null || value === undefined){
       navigate("/");
       return;
     }
+    getUserapi()
+    getapi()
   }, []);
 
 
@@ -108,12 +115,15 @@ function DailyReport() {
 
    //get the daily report list via api
   const getapi = () => {
+    setLoading(true);
     axios
       .get(apiUrl + '?action=getReports') // in this place use two api so mention it(action).
       .then((response) => {
+        setLoading(false);
         setArray(response.data);
       })
       .catch((error) => {
+        setLoading(false);
         console.error("Error fetching daily reports:", error);
         toast.error("Error fetching daily reports");
       });
@@ -152,10 +162,11 @@ function DailyReport() {
   };
 
   const handleSubmit = (e) => {
+    setLoading(true);
     e.preventDefault();
     //Check input value is empty or not
     if (!cashAmount || !reportedTo || !cashHolder || !gPay || !gPayHolder || !pettyCash) {
-
+      setLoading(false);
       toast.error("Please fill in all fields!");
       return;
     }
@@ -215,11 +226,13 @@ function DailyReport() {
         axios
           .post(apiUrl, processedData)
           .then((response) => {
+            setLoading(false);
             toast.success("Entry added successfully!");
             getapi()
             setShowList(true); // Show the report list
           })
           .catch((error) => {
+            setLoading(false);
             console.error("Error adding entry:", error);
             toast.error("Error adding entry");
           });
@@ -283,11 +296,13 @@ function DailyReport() {
         axios
           .put(apiUrl, processedData)
           .then((response) => {
+            setLoading(false);
             toast.success("Entry update successfully!");
             getapi()
             setShowList(true); // Show the report list
           })
           .catch((error) => {
+            setLoading(false);
             console.error("Error adding entry:", error);
             toast.error("Error adding entry");
           });
@@ -304,19 +319,23 @@ function DailyReport() {
   }
 
   const handleDelete = async (e, item) => {
+    setLoading(true);
     // alert(item.Date)
     try {
       const response = await axios.delete(apiUrl, {
         data: { Date: item.Date },
       });
       if (response.status == 200) {
+        setLoading(false);
         toast.success("Data delete successfully!");
         getapi()
       } else if (response.data.error) {
+        setLoading(false);
         alert(response.data.error);
       }
       // fetchData();
     } catch (error) {
+      setLoading(false);
       console.error("Error deleting record:", error);
     }
   };
@@ -379,6 +398,31 @@ function DailyReport() {
   return (
     <div>
       <ToastContainer />
+      <LoadingOverlay
+                   active={loading}
+                   spinner={<CustomSpinner />}
+                   styles={{
+                    overlay: (base) => ({
+                      ...base,
+                      background: 'rgba(0, 0, 0, 0.7)', // Dark transparent background
+                      position: 'fixed', // Fix the overlay on top of the screen
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      zIndex: 9, // Make sure it's on top of everything else
+                    }),
+                    spinner: (base) => ({
+                      ...base,
+                      width: '50px',
+                      height: '50px',
+                      borderWidth: '5px', // Adjust the spinner size and border width
+                      borderColor: 'rgba(255, 255, 255, 0.5)', // Spinner border color
+                      borderTopColor: '#fff', // Spinner top color
+                    }),
+
+                  }}
+                >
       <div className="App2">
         <div className="header_font2"><b>DAILY REPORT</b><div className="header_buttons">
             <button className="icon_button user_border_radius" type="submit"   title={currentuser} onClick={OpenUser}>
@@ -586,6 +630,7 @@ function DailyReport() {
         )}
        
       </div>
+      </LoadingOverlay>
     </div>
   );
 }

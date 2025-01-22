@@ -8,8 +8,9 @@ import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import axios from "axios";
-import { FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaSignOutAlt,FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; 
+import LoadingOverlay from 'react-loading-overlay';
 
 const apiUrl = "http://localhost/hourly_report/Daily_Expenditure.php";
 
@@ -23,8 +24,13 @@ function DailyExpenditure() {
   const formattedDate = format(startDate, "yyyy-MM-dd");
   const [filterDate, setFilterDate] = useState(); // Filter date for the table
   const [totalAmount, setTotalAmount] = useState(0);
-  const [currentuser, setcurrentuser] = useState();
-  
+  const [currentuser, setcurrentuser] = useState()
+  const [loading, setLoading] = useState(false);
+    const CustomSpinner = () => (
+      <div style={{ color: 'black', fontSize: '30px' }}>
+       < FaSpinner />
+      </div>
+    );
 
   const [Array, setArray] = useState([
       {
@@ -37,14 +43,15 @@ function DailyExpenditure() {
     const navigate = useNavigate(); // For go to login page the navigate function
 
   useEffect(() => {
-    fetchApiData(); // Fetch expenditure data
-    getUserapi(); // Fetch item list
+    
     const value = localStorage.getItem('currentUsername');
     setcurrentuser(value)
     if(value === '' || value === null || value === undefined){
       navigate("/");
       return;
     }
+    fetchApiData(); // Fetch expenditure data
+    getUserapi(); // Fetch item list
   }, []);
   useEffect(() => {
     fetchApiData();
@@ -63,6 +70,7 @@ function DailyExpenditure() {
 
   // Fetch expenditure data
   const fetchApiData = () => {
+    setLoading(true);
     const params = filterDate
       ? `?action=getReports&filterDate=${format(filterDate, "yyyy-MM-dd")}`
       : "?action=getReports";
@@ -76,6 +84,7 @@ function DailyExpenditure() {
           0
         );
         setTotalAmount(total);
+        setLoading(false);
       })
       .catch((error) => console.error("Error fetching data:", error));
   };
@@ -83,6 +92,7 @@ function DailyExpenditure() {
 
   // Fetch item list
   const getUserapi = () => {
+    setLoading(true);
     axios
       .get(apiUrl + '?action=getitemlist') // Fetch item list from API
       .then((response) => {
@@ -91,6 +101,7 @@ function DailyExpenditure() {
           label: item.Itemname, // Label displayed in the dropdown
         }));
         setItemnameoptions(options); // Set the formatted options to state
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching item list:", error);
@@ -101,6 +112,7 @@ function DailyExpenditure() {
  
   // Handle form submission
   const handleSubmit = (e) => {
+    setLoading(true);
     e.preventDefault();
 
     if (!formattedDate || !Itemname || !amount || formattedDate === "1970-01-01") {
@@ -117,6 +129,7 @@ function DailyExpenditure() {
     axios
       .post(apiUrl, newEntry)
       .then(() => {
+        setLoading(false);
         toast.success("Data submitted successfully!");
         fetchApiData();
         setItemname("");
@@ -132,14 +145,17 @@ function DailyExpenditure() {
 
    // Handle delete operation
    const handleDelete = async (e, item) => {
+    setLoading(true);
     try {
       const response = await axios.delete(apiUrl, {
         data: { Sno: Number(item.Sno )}, // Send the Sno for deletion
       });
   
       if (response.status === 200) {
-        toast.success("Record deleted successfully!");
+        setLoading(false);
         fetchApiData(); // Refresh the list after deletion
+        toast.success("Record deleted successfully!");
+        
       } else {
         toast.error(response.data.error || "Failed to delete record.");
       }
@@ -162,6 +178,31 @@ function DailyExpenditure() {
   return (
     <div>
       <ToastContainer />
+      <LoadingOverlay
+                   active={loading}
+                   spinner={<CustomSpinner />}
+                   styles={{
+                    overlay: (base) => ({
+                      ...base,
+                      background: 'rgba(0, 0, 0, 0.7)', // Dark transparent background
+                      position: 'fixed', // Fix the overlay on top of the screen
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      zIndex: 9, // Make sure it's on top of everything else
+                    }),
+                    spinner: (base) => ({
+                      ...base,
+                      width: '50px',
+                      height: '50px',
+                      borderWidth: '5px', // Adjust the spinner size and border width
+                      borderColor: 'rgba(255, 255, 255, 0.5)', // Spinner border color
+                      borderTopColor: '#fff', // Spinner top color
+                    }),
+
+                  }}
+                >
       <div className="App">
         <div className="header_font"><b>DAILY EXPENDITURE</b><div className="header_buttons">
                     <button className="icon_button user_border_radius" title={currentuser}>
@@ -289,6 +330,7 @@ function DailyExpenditure() {
       
 
       </div>
+      </LoadingOverlay>
  </div>
   )
 }

@@ -8,9 +8,9 @@ import DatePicker from "react-datepicker";
 import { format } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaCreativeCommonsZero, FaEdit, FaTrashAlt } from "react-icons/fa";
-import { FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaSignOutAlt,FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; 
-
+import LoadingOverlay from 'react-loading-overlay';
 
 const apiUrl = "http://localhost/hourly_report/hourly_api.php";
 
@@ -33,6 +33,7 @@ function HourlyReport() {
   const [getRecentCash, setRecentCash] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
  const [currentuser, setcurrentuser] = useState();
+ const [loading, setLoading] = useState(false);
   const [Array, setArray] = useState([
     {
       ID: "",
@@ -45,7 +46,11 @@ function HourlyReport() {
       cashin_hand: "",
     },
   ]);
-
+  const CustomSpinner = () => (
+    <div style={{ color: 'black', fontSize: '30px' }}>
+     < FaSpinner />
+    </div>
+  );
   const navigate = useNavigate(); // For go to login page the navigate function
 
   useEffect(() => {
@@ -101,9 +106,11 @@ function HourlyReport() {
 
 
   const getapi = () => {
+    setLoading(true); //loading start
     axios
       .get(apiUrl)
       .then((response) => {
+        setLoading(false); //loading stop
         setArray(response.data);
       })
       .catch((error) => console.error("Error fetching users:", error));
@@ -169,6 +176,7 @@ function HourlyReport() {
   };
 
   const handleSubmit = (e) => {
+    setLoading(true);
     e.preventDefault();
     if (
       startTime === "" ||
@@ -235,6 +243,7 @@ function HourlyReport() {
           .post(apiUrl, processedData)
           .then((response) => {
             // alert(response.data.message);
+            setLoading(false);
             getapi();
           })
           .catch((error) => console.error("Error adding user:", error));
@@ -293,6 +302,7 @@ function HourlyReport() {
         axios
         .put(apiUrl, processedData)
         .then((response) => {
+          setLoading(false);
           console.log(response.data.message);
           getapi();  // Optional: refresh the data
         })
@@ -306,6 +316,7 @@ function HourlyReport() {
   };
 
   const handleDelete = async (e, item) => {
+    setLoading(true);
     try {
       const response = await axios.delete(apiUrl, {
         data: { Date : item.Date,
@@ -314,8 +325,10 @@ function HourlyReport() {
       });
 
       if (response.data.message) {
+        setLoading(false);
         alert(response.data.message);
       } else if (response.data.error) {
+        setLoading(false);
         alert(response.data.error);
       }
 
@@ -331,6 +344,7 @@ function HourlyReport() {
       axios
       .get(apiUrl)
       .then((response) => {
+        setLoading(false);
         const formattedDate = format(startDate, "yyyy-MM-dd"); // Format the selected date
         const filtered = response.data.filter((item) => item.Date === formattedDate); // Filter by date
         setFilteredData(filtered);
@@ -377,7 +391,31 @@ function HourlyReport() {
   return (
     <div>
       <ToastContainer />
+      <LoadingOverlay
+                   active={loading}
+                   spinner={<CustomSpinner />}
+                   styles={{
+                    overlay: (base) => ({
+                      ...base,
+                      background: 'rgba(0, 0, 0, 0.7)', // Dark transparent background
+                      position: 'fixed', // Fix the overlay on top of the screen
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      zIndex: 9, // Make sure it's on top of everything else
+                    }),
+                    spinner: (base) => ({
+                      ...base,
+                      width: '50px',
+                      height: '50px',
+                      borderWidth: '5px', // Adjust the spinner size and border width
+                      borderColor: 'rgba(255, 255, 255, 0.5)', // Spinner border color
+                      borderTopColor: '#fff', // Spinner top color
+                    }),
 
+                  }}
+                >
       <div className="App">
         <div className="header_font"><b>HOURLY REPORT</b>  <div className="header_buttons">
     <button className="icon_button user_border_radius" title={currentuser}>
@@ -543,6 +581,7 @@ function HourlyReport() {
           </div>
         </form>
       )}
+      </LoadingOverlay>
     </div>
   );
 }
