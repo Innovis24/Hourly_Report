@@ -174,13 +174,10 @@ tbody tr:hover {
   .txt_transform{
     text-transform: none;
   }
-  .scrollit {
-    /* overflow-y: scroll;
-    height: 389px;
-    width: 75%; */
-    /* overflow-y: scroll; */
-    /* height: 389px; */
+  .scrollit_HR {
     margin:30px;
+    overflow-y: scroll;
+    height: 417px;
     width: auto;  
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
@@ -293,8 +290,8 @@ select:focus {
   gap: 15px;
   align-items: center;
   position: absolute;
-  top: 15px;
-  right: 20px;
+  top: 22px;
+  right: 12px;
 }
 
 .icon_button {
@@ -376,4 +373,19 @@ select:focus {
   outline: none; 
   box-shadow: none;
   margin-right: 24px;
+}
+.mrg_top10{
+  margin-top: 10px;
+}
+.branchname {
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+}
+.branch_style{
+  background: #1995AD;
+    padding: 9px;
+    border-radius: 18px;
+    margin-top: 10px;
+    color:white;
 }

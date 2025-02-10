@@ -128,7 +128,7 @@ function Login() {
       .get(apiUrl)
       .then((response) => {
         setArray(response.data);
-        setcurrentuser(response.data[0].UserName)
+        setcurrentuser(response.data)
       })
       .catch((error) => console.error("Error fetching users:", error));
     }
@@ -150,10 +150,11 @@ function Login() {
     }
     const filtered = Array.filter((item) => item.UserName === username); 
     if(filtered.length > 0 ){
-      const filtered = Array.filter((item) => item.Password === password && item.Status === "Active"); 
-      if(filtered.length>0){
-        // onLogin();
-        localStorage.setItem('currentUsername',currentuser);
+      const filteredVal = filtered.filter((item) => item.Password === password && item.Status === "Active"); 
+      if(filteredVal.length>0){
+ 
+        const loginFilterVal = currentuser.filter((item) => item.UserName === username);
+        localStorage.setItem('currentUsername',JSON.stringify(loginFilterVal));
         navigate("/hourly_report");
       }
       else{

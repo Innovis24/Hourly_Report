@@ -184,15 +184,12 @@ tbody tr:hover {
   .txt_transform{
     text-transform: none;
   }
-  .scrollit {
-    /* overflow-y: scroll;
-    height: 389px;
-    width: 75%; */
-    /* overflow-y: scroll; */
-    /* height: 389px; */
-    margin:30px;
+  .scrollit_dr {
+    margin:20px;
     width: auto;  
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-y: scroll;
+    height: 398px;
 
 }
 .iconPaddig{
@@ -207,7 +204,7 @@ tbody tr:hover {
 }
 .padding_top2{
   padding-top: 15px;
-  width: 80%;
+  width: 100%;
 }
 
 
@@ -348,7 +345,7 @@ tbody tr:hover {
   background-color: #f8f9fa; /* Optional styling for card background */
   border-radius: 10px; /* Optional rounded corners */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow effect */
-  padding: 20px;
+  padding: 16px;
   width: 200px; /* Set a fixed width for cards */
   text-align: center;
 }
@@ -393,8 +390,8 @@ tbody tr:hover {
   gap: 15px;
   align-items: center;
   position: absolute;
-  top: 15px;
-  right: 20px;
+  top: 22px;
+  right: 12px;
 }
 
 .icon_button {
@@ -474,4 +471,27 @@ tbody tr:hover {
 }
 .mrg_lft_card{
   margin-left: -40%;
+}
+.sticky-div {
+  position: sticky;
+  top: 0;
+  padding: 10px;
+  z-index: 1000;
+}
+.card_style_dailyReport{
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  height: 73vh;
+}
+@media screen and (min-width: 2160px) and (max-width: 3840px) {
+  .card_style_dailyReport{
+    overflow-y: scroll;
+    height: 18vh !important;
+  }
+}
+@media screen and (min-width: 2880px) and (max-width: 5120px) {
+  .card_style_dailyReport{
+    overflow-y: scroll;
+    height: 15vh !important;
+  }
 }

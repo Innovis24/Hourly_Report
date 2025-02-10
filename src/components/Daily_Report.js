@@ -54,6 +54,7 @@ function DailyReport() {
     },
   ]);
  const [isOpen, setIsOpen] = useState(false);
+   const [curretnBranchname, setcurretnBranchname] = useState();
   const closeModal = () => setIsOpen(false);
   const navigate = useNavigate(); // For go to login page the navigate function
 
@@ -62,12 +63,12 @@ function DailyReport() {
     // Fetch options for the "Reported To" dropdown
     getUserapi()
     getapi()
-    const value = localStorage.getItem('currentUsername');
-    setcurrentuser(value)
-        
-    const nameParts = value.charAt(0);
-   
+    const value =  JSON.parse(localStorage.getItem('currentUsername'));
+    const usernameVal = value[0].UserName
+    setcurrentuser(usernameVal)
+    const nameParts = usernameVal.charAt(0);
     setcurrentuserName(nameParts);
+    setcurretnBranchname(value[0].BranchName)
   }, []);
 
 
@@ -430,7 +431,12 @@ function DailyReport() {
                   </div>
           </div>
         )}
-
+         { curretnBranchname && 
+        <div  className="branchname">
+          <div className="branch_style sticky-div">
+            {curretnBranchname}
+          </div>
+        </div> }
         {showList === false && (
           <button className="listbtn submitbutton" onClick={showlistitem}>
             DailyReport List
@@ -438,7 +444,7 @@ function DailyReport() {
         )}
 
         {showList === false && (
-          <div className="card_design2">
+          <div className="card_design2 card_style_dailyReport">
             <form onSubmit={handleSubmit}>
               <div className="body_padding2">
                 <DatePicker
@@ -545,6 +551,7 @@ function DailyReport() {
               )}
             </div>
 
+<div className="App scrollit_dr table_scroll">
 
 <center>
             <table className="padding_top2">
@@ -608,6 +615,7 @@ function DailyReport() {
               </tbody>
             </table>
             </center>
+            </div>
           </div>
         )}
        

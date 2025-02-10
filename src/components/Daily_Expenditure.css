@@ -499,8 +499,8 @@ tbody tr:hover {
   gap: 15px;
   align-items: center;
   position: absolute;
-  top: 15px;
-  right: 20px;
+  top: 22px;
+  right: 12px;
 }
 
 .icon_button {
@@ -526,4 +526,13 @@ tbody tr:hover {
 .icon_button:active {
   transform: scale(0.95); /* Button press effect */
   box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2);
+}
+.scrollit_de
+{
+  margin:20px;
+  width: 66%;  
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-y: scroll;
+  height: 345px;
+      scrollbar-width: thin;
 }

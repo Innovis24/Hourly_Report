@@ -4,6 +4,7 @@ import Home from "./components/Home";
 import HourlyReport from './components/Hourly_Report';
 import DailyReport from "./components/Daily_Report";
 import DailyExpenditure from "./components/Daily_Expenditure";
+import UserMaster from "./components/UserMaster";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 
 function App() {
@@ -29,6 +30,7 @@ function MainContent() {
         <Route path="/home" element={<Home />} />
         <Route path="/hourly_report" element={<HourlyReport />} />
         <Route path="/daily_report" element={<DailyReport />} />
+        <Route path="/user_master" element={<UserMaster />} />
         <Route path="/daily_expenditure" element={<DailyExpenditure />} />
       </Routes>
     </>

@@ -26,7 +26,8 @@ function DailyExpenditure() {
   const [filterDate, setFilterDate] = useState(); // Filter date for the table
   const [totalAmount, setTotalAmount] = useState(0);
   const [currentuser, setcurrentuser] = useState();
-    const [openpopup, setopenpopup] = useState();
+  const [openpopup, setopenpopup] = useState();
+  const [curretnBranchname, setcurretnBranchname] = useState();
   const [currentuserName, setcurrentuserName] = useState();
   const [Array, setArray] = useState([
       {
@@ -45,11 +46,12 @@ const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
     fetchApiData(); // Fetch expenditure data
     getUserapi(); // Fetch item list
-    const value = localStorage.getItem('currentUsername');
-    setcurrentuser(value)
-    const nameParts = value.charAt(0);
-   
+    const value =  JSON.parse(localStorage.getItem('currentUsername'));
+    const usernameVal = value[0].UserName
+    setcurrentuser(usernameVal)
+    const nameParts = usernameVal.charAt(0);
     setcurrentuserName(nameParts);
+    setcurretnBranchname(value[0].BranchName)
   }, []);
   useEffect(() => {
     fetchApiData();
@@ -216,6 +218,13 @@ const [isOpen, setIsOpen] = useState(false);
                       <FaSignOutAlt size={20} />
                     </button> */}
                   </div></div>
+                 
+                  { curretnBranchname && 
+        <div  className="branchname">
+          <div className="branch_style sticky-div">
+            {curretnBranchname}
+          </div>
+        </div> }
         <button className="listbtn submitbutton" onClick={handleListToggle}>
           {showList ? "Back" : "Daily Expenditure List"}
         </button>
@@ -286,7 +295,8 @@ const [isOpen, setIsOpen] = useState(false);
                 isClearable // Allows clearing the date filter
               />
             </div>
-            <center>          <div className="table_align3">
+            <center>         
+               <div className="table_align3  scrollit_de table_scroll">
             <table className="padding_top3">
               <thead className="table_header3">
                 <tr>

@@ -35,6 +35,7 @@ function HourlyReport() {
   const [filteredData, setFilteredData] = useState([]);
  const [currentuser, setcurrentuser] = useState();
    const [currentuserName, setcurrentuserName] = useState();
+   const [curretnBranchname, setcurretnBranchname] = useState();
    const [openpopup, setopenpopup] = useState();
   const [Array, setArray] = useState([
     {
@@ -55,11 +56,13 @@ function HourlyReport() {
   useEffect(() => {
     // Update filtered data state
     getapi();
-    const value = localStorage.getItem('currentUsername');
-    setcurrentuser(value)
-    const nameParts = value.charAt(0);
    
+    const value =  JSON.parse(localStorage.getItem('currentUsername'));
+    const usernameVal = value[0].UserName
+    setcurrentuser(usernameVal)
+    const nameParts = usernameVal.charAt(0);
     setcurrentuserName(nameParts);
+    setcurretnBranchname(value[0].BranchName)
   }, []);
 
 
@@ -429,7 +432,12 @@ function HourlyReport() {
       <FaSignOutAlt size={20} />
     </button> */}
   </div></div>
-     
+  { curretnBranchname && 
+        <div  className="branchname">
+          <div className="branch_style">
+            {curretnBranchname}
+          </div>
+        </div> }
         {/* report list button */}
         {Showlist === false && (
           <button className="listbtn submitbutton" onClick={showlistitem}>
@@ -517,12 +525,13 @@ function HourlyReport() {
             <DatePicker
               selected={startDate}
               dateFormat="yyyy-MM-dd"
+              className="mrg_top10"
               maxDate={new Date()}
               onChange={(date) => setStartDate(date)}
               id="date-picker"
             />
           </div>
-          <div className="App scrollit table_scroll">
+          <div className="App scrollit_HR table_scroll">
             <center>
             <table className="padding_top">
               <thead className="table_header">

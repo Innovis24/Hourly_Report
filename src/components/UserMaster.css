@@ -1,0 +1,23 @@
+.padding_top3{
+    padding-top: 15px;
+    width: 80%;
+  }
+  .table_header3 {
+    background-color: #1995AD;
+    color: white;
+    font-size: 16px;
+    text-align: left;
+    font-weight: bold;
+  }
+  .scrollit_UM {
+    margin:30px;
+    width: auto;  
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+table {
+    width: 100%;
+    font-size: 14px;
+}
+tbody td {
+    padding: 10px; /* Adjust as needed */
+  }
