@@ -403,7 +403,7 @@ tbody tr:hover {
   color: #1995AD; 
   cursor: pointer;
   outline: none;
-  padding: 10px;
+  padding: 11px 14px 11px 14px;
   border-radius: 50%; 
   transition: all 0.3s ease-in-out;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -430,21 +430,48 @@ tbody tr:hover {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   padding: 16px;
-  width: 128px;
+  width: 170px;
   z-index: 10;
+}
+.userName{
+  padding:7px;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+  display: flex;
+}
+.userName:hover{
+  background-color: #f1f1f1;
+  padding:7px;
+}
+.mrg_rgt{
+  margin-right: 12px;
+}
+.color_logout{
+  color: #1995AD;
+  font-size: 20px;
+ }
+ .cls_imagecolor{
+  color:black;
+  font-size: 18px;
 }
 .card-contents {
   margin-top: 16px;
 }
-.menu-alignment{
-  display: flex;
-  flex-direction: row;
-  cursor: pointer;
-  
-}
 .logout_alignment{
   border: none;
-    background: none;
-    margin-left: 10px;
-    font-size: 15px;
+  background: none;
+  margin-left: 4px;
+  font-size: 18px;
+  
+}
+.logout_btn{
+  padding:7px;
+}
+.logout_btn:hover{
+  background-color: #f1f1f1;
+  padding:7px;
+}
+.mrg_lft_card{
+  margin-left: -40%;
 }

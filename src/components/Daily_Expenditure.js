@@ -10,7 +10,9 @@ import { format } from "date-fns";
 import axios from "axios";
 import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; 
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignOut, faUser  } from '@fortawesome/free-solid-svg-icons';
+import Popup from 'reactjs-popup';
 const apiUrl = "http://localhost/hourly_report/Daily_Expenditure.php";
 
 function DailyExpenditure() {
@@ -24,8 +26,8 @@ function DailyExpenditure() {
   const [filterDate, setFilterDate] = useState(); // Filter date for the table
   const [totalAmount, setTotalAmount] = useState(0);
   const [currentuser, setcurrentuser] = useState();
-  
-
+    const [openpopup, setopenpopup] = useState();
+  const [currentuserName, setcurrentuserName] = useState();
   const [Array, setArray] = useState([
       {
         Date: "",
@@ -33,14 +35,21 @@ function DailyExpenditure() {
         Amount: "",
       },
     ]);
-
+const [isOpen, setIsOpen] = useState(false);
+  const closeModal = () => setIsOpen(false);
     const navigate = useNavigate(); // For go to login page the navigate function
-
+    const OpenUser=()=>{
+      setopenpopup(!openpopup);
+    }
+  
   useEffect(() => {
     fetchApiData(); // Fetch expenditure data
     getUserapi(); // Fetch item list
     const value = localStorage.getItem('currentUsername');
     setcurrentuser(value)
+    const nameParts = value.charAt(0);
+   
+    setcurrentuserName(nameParts);
   }, []);
   useEffect(() => {
     fetchApiData();
@@ -154,23 +163,58 @@ function DailyExpenditure() {
     localStorage.clear();
     navigate("/")
   };
-
+  const OpenPopupcard = () => {
+    setIsOpen(true)
+  }
   return (
     <div>
       <ToastContainer />
+        <Popup open={isOpen} onClose={closeModal} contentStyle={{
+                  width: '385px', 
+                  padding: '20px', 
+                  border: '1px solid #ccc',
+                  borderRadius: '8px',
+                   background: 'white'
+                }}>
+                  <div >
+                    <h2 className="fontFam">Are you sure you want to logout?</h2>
+                    <div className="popup_btn">
+                      <button className="btn_yesclr" onClick={handleExit}>Yes</button>
+                      <button className="btn_noClr" onClick={closeModal}>No</button>
+                    </div>
+            
+                  </div>
+                </Popup>
+
+      {openpopup && (
+                <div className="menu_card ">
+                   <div className="userName ">
+                    <FontAwesomeIcon icon={faUser} className="color_logout mrg_rgt"/>
+                    <div className="cls_imagecolor">{currentuser}</div>
+                   </div>
+                 
+                   <div className="logout_btn cursor_logout" onClick={OpenPopupcard}>
+                          <FontAwesomeIcon icon={faSignOut} className="mrg_lft_card color_logout"/>
+                          <button className="logout_alignment" >
+                            Logout
+                          </button>
+                        </div>
+                </div>
+              )}
       <div className="App">
-        <div className="header_font"><b>DAILY EXPENDITURE</b><div className="header_buttons">
-                    <button className="icon_button user_border_radius" title={currentuser}>
-                      {/* <FaUser size={20} /> */}
-                      {currentuser}
-                    </button>
-                    <button
+        <div className="header_font"><b>DAILY EXPENDITURE</b>
+        <div className="header_buttons">
+        <button className="icon_button user_border_radius" type="submit"   title={currentuser} onClick={OpenUser}>
+              {/* <FaUser size={20} /> */}
+              {currentuserName}
+            </button>
+                    {/* <button
               className="icon_button"
               title="Logout"
               onClick={handleExit} // Add click handler
             >
                       <FaSignOutAlt size={20} />
-                    </button>
+                    </button> */}
                   </div></div>
         <button className="listbtn submitbutton" onClick={handleListToggle}>
           {showList ? "Back" : "Daily Expenditure List"}

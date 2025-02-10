@@ -7,10 +7,11 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import { format } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
-import { FaCreativeCommonsZero, FaEdit, FaTrashAlt } from "react-icons/fa";
-import { FaUser, FaSignOutAlt } from "react-icons/fa";
+import {  FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignOut, faUser  } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom"; 
-
+import Popup from 'reactjs-popup';
 
 const apiUrl = "http://localhost/hourly_report/hourly_api.php";
 
@@ -33,6 +34,8 @@ function HourlyReport() {
   const [getRecentCash, setRecentCash] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
  const [currentuser, setcurrentuser] = useState();
+   const [currentuserName, setcurrentuserName] = useState();
+   const [openpopup, setopenpopup] = useState();
   const [Array, setArray] = useState([
     {
       ID: "",
@@ -45,7 +48,8 @@ function HourlyReport() {
       cashin_hand: "",
     },
   ]);
-
+  const [isOpen, setIsOpen] = useState(false);
+  const closeModal = () => setIsOpen(false);
   const navigate = useNavigate(); // For go to login page the navigate function
 
   useEffect(() => {
@@ -53,6 +57,9 @@ function HourlyReport() {
     getapi();
     const value = localStorage.getItem('currentUsername');
     setcurrentuser(value)
+    const nameParts = value.charAt(0);
+   
+    setcurrentuserName(nameParts);
   }, []);
 
 
@@ -104,7 +111,12 @@ function HourlyReport() {
       .catch((error) => console.error("Error fetching users:", error));
   };
 
-
+  const OpenUser=()=>{
+    setopenpopup(!openpopup);
+  }
+  const OpenPopupcard = () => {
+    setIsOpen(true)
+  }
   const handleDateChange = (date) => {
     setStartDate(date);
     getapi()
@@ -372,20 +384,50 @@ function HourlyReport() {
   return (
     <div>
       <ToastContainer />
+      <Popup open={isOpen} onClose={closeModal} contentStyle={{
+      width: '385px', 
+      padding: '20px', 
+      border: '1px solid #ccc',
+      borderRadius: '8px',
+       background: 'white'
+    }}>
+      <div >
+        <h2 className="fontFam">Are you sure you want to logout?</h2>
+        <div className="popup_btn">
+          <button className="btn_yesclr" onClick={handleExit}>Yes</button>
+          <button className="btn_noClr" onClick={closeModal}>No</button>
+        </div>
 
+      </div>
+    </Popup>
+       {openpopup && (
+          <div className="menu_card ">
+             <div className="userName ">
+              <FontAwesomeIcon icon={faUser} className="color_logout mrg_rgt"/>
+              <div className="cls_imagecolor">{currentuser}</div>
+             </div>
+           
+             <div className="logout_btn cursor_logout" onClick={OpenPopupcard}>
+                    <FontAwesomeIcon icon={faSignOut} className="mrg_lft_card color_logout"/>
+                    <button className="logout_alignment" >
+                      Logout
+                    </button>
+                  </div>
+          </div>
+        )}
       <div className="App">
         <div className="header_font"><b>HOURLY REPORT</b>  <div className="header_buttons">
-    <button className="icon_button user_border_radius" title={currentuser}>
-    {/* <FaUser size={20} /> */}
-    {currentuser}
-    </button>
-    <button
+        <button className="icon_button user_border_radius" type="submit"   title={currentuser} onClick={OpenUser}>
+              {/* <FaUser size={20} /> */}
+              {currentuserName}
+            </button>
+    {/* <button
               className="icon_button"
               title="Logout"
               onClick={handleExit} // Add click handler
             >
       <FaSignOutAlt size={20} />
-    </button>
+    </button> */}
   </div></div>
      
         {/* report list button */}
@@ -480,7 +522,7 @@ function HourlyReport() {
               id="date-picker"
             />
           </div>
-          <div className="App scrollit">
+          <div className="App scrollit table_scroll">
             <center>
             <table className="padding_top">
               <thead className="table_header">

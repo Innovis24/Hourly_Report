@@ -8,7 +8,9 @@ import { format } from "date-fns";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
-import { FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignOut, faUser  } from '@fortawesome/free-solid-svg-icons';
+import Popup from 'reactjs-popup';
 import { useNavigate } from "react-router-dom"; 
 
 const apiUrl = "http://localhost/hourly_report/Daily_Report_api.php";
@@ -33,6 +35,7 @@ function DailyReport() {
   const [Total, setTotal] = useState("");
   const [openpopup, setopenpopup] = useState();
   const [currentuser, setcurrentuser] = useState();
+  const [currentuserName, setcurrentuserName] = useState();
   const [Array, setArray] = useState([
     {
       Sno: "",
@@ -50,7 +53,8 @@ function DailyReport() {
       TotalCashinTaken: "",
     },
   ]);
-
+ const [isOpen, setIsOpen] = useState(false);
+  const closeModal = () => setIsOpen(false);
   const navigate = useNavigate(); // For go to login page the navigate function
 
   //useeffect - render every page refresh (1st render this function)
@@ -60,6 +64,10 @@ function DailyReport() {
     getapi()
     const value = localStorage.getItem('currentUsername');
     setcurrentuser(value)
+        
+    const nameParts = value.charAt(0);
+   
+    setcurrentuserName(nameParts);
   }, []);
 
 
@@ -371,35 +379,57 @@ function DailyReport() {
   const OpenUser=()=>{
     setopenpopup(!openpopup);
   }
-
+  const OpenPopupcard = () => {
+    setIsOpen(true)
+  }
   return (
     <div>
       <ToastContainer />
+        <Popup open={isOpen} onClose={closeModal} contentStyle={{
+            width: '385px', 
+            padding: '20px', 
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+             background: 'white'
+          }}>
+            <div >
+              <h2 className="fontFam">Are you sure you want to logout?</h2>
+              <div className="popup_btn">
+                <button className="btn_yesclr" onClick={handleExit}>Yes</button>
+                <button className="btn_noClr" onClick={closeModal}>No</button>
+              </div>
+      
+            </div>
+          </Popup>
       <div className="App2">
         <div className="header_font2"><b>DAILY REPORT</b><div className="header_buttons">
             <button className="icon_button user_border_radius" type="submit"   title={currentuser} onClick={OpenUser}>
               {/* <FaUser size={20} /> */}
-              {currentuser}
+              {currentuserName}
             </button>
-            <button
+            {/* <button
               className="icon_button"
               title="Logout" type="submit" 
               onClick={handleExit} // Add click handler
             >
               <FaSignOutAlt size={20} />
-            </button>
+            </button> */}
           </div></div>
-          {/* {openpopup && (
+          {openpopup && (
           <div className="menu_card ">
-            <div className="menu-alignment" onClick={handleExit}>
-            <FaSignOutAlt size={20} />
-            <button className="logout_alignment" >
-              Logout
-            </button>
-            </div>
+             <div className="userName ">
+              <FontAwesomeIcon icon={faUser} className="color_logout mrg_rgt"/>
+              <div className="cls_imagecolor">{currentuser}</div>
+             </div>
+           
+             <div className="logout_btn cursor_logout" onClick={handleExit}>
+                    <FontAwesomeIcon icon={faSignOut} className="mrg_lft_card color_logout"/>
+                    <button className="logout_alignment" >
+                      Logout
+                    </button>
+                  </div>
           </div>
-        )} */}
-
+        )}
 
         {showList === false && (
           <button className="listbtn submitbutton" onClick={showlistitem}>

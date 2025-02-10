@@ -344,3 +344,36 @@ select:focus {
   font-size: 14px;
   font-weight: 600;
 }
+.table_scroll{
+  overflow-x: auto;
+}
+.popup_btn{
+  display: flex;
+      flex-direction: row;
+      justify-content: center;
+}
+.btn_noClr{
+  background-color: white;
+  color: #1995AD;
+  border: 1px solid #1995AD;
+  border-radius: 5px;
+  padding: 7px;
+  font-size: 18px;
+  width: 18%;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn_yesclr{
+  background-color: #1995AD;
+  color:white;
+  border: 1px solid #1995AD !important;
+  border-radius: 5px;
+  padding: 7px;
+  cursor: pointer;
+  font-size: 18px;
+  width: 18%;
+  text-decoration: none;
+  outline: none; 
+  box-shadow: none;
+  margin-right: 24px;
+}
