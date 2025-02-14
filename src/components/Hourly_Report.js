@@ -38,7 +38,7 @@ function HourlyReport() {
   const [branchNamelist, setbranchNamelist] = useState("");
   const [selectBranchname, setselectBranchname] = useState("");
  const [currentuser, setcurrentuser] = useState();
-   const [currentuserName, setcurrentuserName] = useState();
+   const [recentuser, setrecentuser] = useState();
    const [curretnBranchname, setcurretnBranchname] = useState();
    const [openpopup, setopenpopup] = useState();
   const [Array, setArray] = useState([
@@ -61,11 +61,12 @@ function HourlyReport() {
     // Update filtered data state
    
     const value =  JSON.parse(localStorage.getItem('currentUsername'));
-    const usernameVal = value[0].UserName
+    
+    const username = value[0].Name
     setcurrentRole(value[0].UserRole)
-    setcurrentuser(usernameVal)
-    const nameParts = usernameVal.charAt(0);
-    setcurrentuserName(nameParts);
+    setcurrentuser(username)
+    const nameParts = username.charAt(0);
+    setrecentuser(nameParts);
     setcurretnBranchname(value[0].BranchName)
    
     getapi(value[0].BranchName,'');
@@ -457,7 +458,7 @@ function HourlyReport() {
         <div className="header_font"><b>HOURLY REPORT</b>  <div className="header_buttons">
         <button className="icon_button user_border_radius" type="submit"   title={currentuser} onClick={OpenUser}>
               {/* <FaUser size={20} /> */}
-              {currentuserName}
+              {recentuser}
             </button>
     {/* <button
               className="icon_button"

@@ -30,16 +30,10 @@ function DailyExpenditure() {
   const [currentRole, setcurrentRole] = useState();
   const [openpopup, setopenpopup] = useState();
   const [curretnBranchname, setcurretnBranchname] = useState();
-  const [currentuserName, setcurrentuserName] = useState();
   const [selectBranchname, setselectBranchname] = useState("");
+     const [recentuser, setrecentuser] = useState();
   const [branchNamelist, setbranchNamelist] = useState("");
-  const [Array, setArray] = useState([
-      {
-        Date: "",
-        Itemname: "",
-        Amount: "",
-      },
-    ]);
+ 
 const [isOpen, setIsOpen] = useState(false);
   const closeModal = () => setIsOpen(false);
     const navigate = useNavigate(); // For go to login page the navigate function
@@ -50,11 +44,11 @@ const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
     getBranchName();
     const value =  JSON.parse(localStorage.getItem('currentUsername'));
-    const usernameVal = value[0].UserName
+    const usernameVal = value[0].Name
     setcurrentuser(usernameVal)
     const nameParts = usernameVal.charAt(0);
     setcurrentRole(value[0].UserRole)
-    setcurrentuserName(nameParts);
+    setrecentuser(nameParts);
     setcurretnBranchname(value[0].BranchName);
     
     fetchApiData(value[0].BranchName); // Fetch expenditure data
@@ -300,7 +294,7 @@ const [isOpen, setIsOpen] = useState(false);
         <div className="header_buttons">
         <button className="icon_button user_border_radius" type="submit"   title={currentuser} onClick={OpenUser}>
               {/* <FaUser size={20} /> */}
-              {currentuserName}
+              {recentuser}
             </button>
                     {/* <button
               className="icon_button"

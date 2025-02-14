@@ -40,7 +40,7 @@ function DailyReport() {
   const [currentuser, setcurrentuser] = useState();
     const [branchNamelist, setbranchNamelist] = useState("");
     const [selectBranchname, setselectBranchname] = useState("");
-  const [currentuserName, setcurrentuserName] = useState();
+    const [recentuser, setrecentuser] = useState();
   const [Array, setArray] = useState([
     {
       Sno: "",
@@ -69,10 +69,10 @@ function DailyReport() {
     
     const value =  JSON.parse(localStorage.getItem('currentUsername'));
     setcurrentRole(value[0].UserRole)
-    const usernameVal = value[0].UserName
+    const usernameVal = value[0].Name
     setcurrentuser(usernameVal)
     const nameParts = usernameVal.charAt(0);
-    setcurrentuserName(nameParts);
+    setrecentuser(nameParts);
     setcurretnBranchname(value[0].BranchName)
     getUserapi()
     getapi(value[0].BranchName)
@@ -572,7 +572,7 @@ function DailyReport() {
         <div className="header_font2"><b>DAILY REPORT</b><div className="header_buttons">
             <button className="icon_button user_border_radius" type="submit"   title={currentuser} onClick={OpenUser}>
               {/* <FaUser size={20} /> */}
-              {currentuserName}
+              {recentuser}
             </button>
             {/* <button
               className="icon_button"
