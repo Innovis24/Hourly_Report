@@ -510,3 +510,10 @@ select:focus {
 .head_style{
   font-weight: 600;
 }
+.branchName_style{
+  background:  #1995AD;
+    padding: 10px;
+    color: white;
+    margin-top: 12px;
+    border-radius: 16px;
+}
