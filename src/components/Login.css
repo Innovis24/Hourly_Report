@@ -1,0 +1,211 @@
+/* General Styles */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    height: 100vh; 
+    overflow: hidden; 
+}
+
+.login-container {
+    display: flex;
+    height: 100vh; 
+    width: 100vw; /* Fullscreen width */
+}
+
+/* Illustration Section */
+.login-illustration {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+        width: 100%;
+        background: white;
+}
+
+.illustration-img {
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    border-radius: 0;
+    box-shadow: none; 
+}
+
+/* Form Section */
+.login-form-container {
+    flex: 1; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%; 
+    background-color: white;
+    border-radius: 0; 
+   
+    padding: 2rem;
+}
+
+
+.login-form-wrapper {
+    width: 95%;
+    max-width: 350px;
+    padding: 28px;
+    border-radius: 17px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3)
+}
+
+.login-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.login_font_style{
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-family: 'Roboto', sans-serif;
+}
+
+.form-input1 {
+    width: 88%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+
+.forgot-password {
+    display: block;
+    text-align: right;
+    font-size: 0.875rem;
+    color: #00b4b6;
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+
+.login-image {
+    width: 45%;
+  }
+.login-form {
+    width: 65%;
+    padding: 20px;
+  }
+
+  @media (max-width: 600px) {
+    .login-image {
+        display: none; /* Hide image on mobile */
+      }
+    
+      .login-form {
+        width: 100%; /* Form takes full width */
+      }
+  }
+  .loginBtn {
+    display: block;
+    width: 30%;
+    font-family: 'Roboto', sans-serif;
+    background: #00b4b6;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px; /* Added margin to ensure separation */
+  }
+  .logjustify{
+    display: flex;
+    justify-content: center;
+    
+  }
+  input::placeholder {
+    font-family: 'Roboto', sans-serif;
+    color: gray; /* Optional: Change placeholder color */
+  }
+  .signuplg {
+    color: #00b4b6;
+    border: none;
+    padding: 5px 10px; /* Smaller padding */
+    font-size: 14px; /* Reduced font size */
+    cursor: pointer;
+    border-radius: 3px;
+   
+  }
+  
+  .signuplg:hover {
+    color: #069a9c; /* Change text color */
+    text-decoration: underline; /* Add underline */
+  }
+  
+  .forget_pwd {
+    color: #00b4b6;
+    border: none;
+    padding: 5px 10px; /* Smaller padding */
+    font-size: 14px; /* Reduced font size */
+    cursor: pointer;
+    border-radius: 3px;
+    text-align: end;
+  }
+  
+  .forget_pwd:hover {
+    color: #069a9c; /* Change text color */
+    text-decoration: underline; /* Add underline */
+  }
+  
+  
+  .register-prompt {
+    text-align: center;
+  
+  }
+  .mrn_bottom15{
+    margin-bottom: 15px !important;
+  }
+  .acc_mrg_btm{
+    margin-bottom: 5px;
+  }
+  .button_login_color{
+    border: none;
+    background: none;
+    color: #00b4b6;
+    font-size: 14px; /* Reduced font size */
+  }
+  .button_login_color:hover {
+    color: #069a9c; /* Change text color */
+    text-decoration: underline; /* Add underline */
+  }
+  .pwd_style{
+    
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-right: -5%;
+
+  }
+  .wifth_90{
+    width: 94%;
+    display: flex;
+  }

@@ -11,13 +11,14 @@ import axios from "axios";
 import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOut, faUser  } from '@fortawesome/free-solid-svg-icons';
+import { faSignOut, faUser,faCircleXmark  } from '@fortawesome/free-solid-svg-icons';
 import Popup from 'reactjs-popup';
 const apiUrl = "http://localhost/hourly_report/Daily_Expenditure.php";
+const user_api = "http://localhost/hourly_report/User_Master.php";
 
 function DailyExpenditure() {
   const [startDate, setStartDate] = useState(new Date());
-  const [showList, setShowList] = useState(false);
+  const [showList, setShowList] = useState(true);
   const [Itemname, setItemname] = useState("");
   const [amount, setAmount] = useState("");
   const [dataArray, setDataArray] = useState([]);
@@ -26,9 +27,12 @@ function DailyExpenditure() {
   const [filterDate, setFilterDate] = useState(); // Filter date for the table
   const [totalAmount, setTotalAmount] = useState(0);
   const [currentuser, setcurrentuser] = useState();
+  const [currentRole, setcurrentRole] = useState();
   const [openpopup, setopenpopup] = useState();
   const [curretnBranchname, setcurretnBranchname] = useState();
   const [currentuserName, setcurrentuserName] = useState();
+  const [selectBranchname, setselectBranchname] = useState("");
+  const [branchNamelist, setbranchNamelist] = useState("");
   const [Array, setArray] = useState([
       {
         Date: "",
@@ -44,22 +48,20 @@ const [isOpen, setIsOpen] = useState(false);
     }
   
   useEffect(() => {
-    fetchApiData(); // Fetch expenditure data
-    getUserapi(); // Fetch item list
+    getBranchName();
     const value =  JSON.parse(localStorage.getItem('currentUsername'));
     const usernameVal = value[0].UserName
     setcurrentuser(usernameVal)
     const nameParts = usernameVal.charAt(0);
+    setcurrentRole(value[0].UserRole)
     setcurrentuserName(nameParts);
-    setcurretnBranchname(value[0].BranchName)
+    setcurretnBranchname(value[0].BranchName);
+    
+    fetchApiData(value[0].BranchName); // Fetch expenditure data
+    getUserapi(); // Fetch item list
   }, []);
-  useEffect(() => {
-    fetchApiData();
-  }, [filterDate]);
   
-  useEffect(() => {
-    console.log("Itemnameoptions state updated:", Itemnameoptions);
-  }, [Itemnameoptions]);
+ 
   
  // Filter data by selected date
  const filteredData = filterDate
@@ -69,7 +71,7 @@ const [isOpen, setIsOpen] = useState(false);
  : dataArray;
 
   // Fetch expenditure data
-  const fetchApiData = () => {
+  const fetchApiData = (branchval) => {
     const params = filterDate
       ? `?action=getReports&filterDate=${format(filterDate, "yyyy-MM-dd")}`
       : "?action=getReports";
@@ -77,17 +79,52 @@ const [isOpen, setIsOpen] = useState(false);
     axios
       .get(apiUrl + params)
       .then((response) => {
-        setDataArray(response.data);
-        const total = response.data.reduce(
-          (acc, entry) => acc + parseFloat(entry.Amount || 0),
-          0
-        );
-        setTotalAmount(total);
+        if(branchval){
+          const filterbranch = response.data.filter((item)=>item.BranchName === branchval)
+          setDataArray(filterbranch);
+          const total = totalval(filterbranch)
+          setTotalAmount(total);
+        }
+        else{
+          setDataArray(response.data);
+          const total = totalval(response.data)
+          setTotalAmount(total);
+        }
+        
       })
       .catch((error) => console.error("Error fetching data:", error));
   };
-  
-
+  const totalval=(totalVal)=>{
+    const total = totalVal.reduce(
+      (acc, entry) => acc + parseFloat(entry.Amount || 0),
+      0
+    );
+    return total;
+  }
+  const getBranchName = () => {
+    axios
+      .get(user_api+'?action=getbranchName')
+      .then((response) => {
+        setbranchNamelist(response.data);
+      })
+      .catch((error) => console.error("Error fetching users:", error));
+  };
+  const clearDate=()=>{
+    setFilterDate(null);
+    handleselectDateval(selectBranchname,'')
+  }
+  const clearBranch=()=>{
+       setselectBranchname("")
+    handleselectDateval('',filterDate)
+  }
+  const handleBranchChange = (e) => {
+    setselectBranchname(e.target.value);
+    handleselectDateval(e.target.value,filterDate)
+  };
+  const handleSelectDate = (value)=>{
+    setFilterDate(value)
+    handleselectDateval(selectBranchname,value)
+  }
   // Fetch item list
   const getUserapi = () => {
     axios
@@ -119,13 +156,15 @@ const [isOpen, setIsOpen] = useState(false);
       Date: formattedDate,
       Itemname: Itemname,
       Amount: amount,
+      BranchName:curretnBranchname,
+      ManagerName:currentuser
     };
 
     axios
       .post(apiUrl, newEntry)
       .then(() => {
         toast.success("Data submitted successfully!");
-        fetchApiData();
+        fetchApiData(curretnBranchname);
         setItemname("");
         setAmount("");
         setStartDate(new Date());
@@ -146,7 +185,7 @@ const [isOpen, setIsOpen] = useState(false);
   
       if (response.status === 200) {
         toast.success("Record deleted successfully!");
-        fetchApiData(); // Refresh the list after deletion
+        fetchApiData(curretnBranchname); // Refresh the list after deletion
       } else {
         toast.error(response.data.error || "Failed to delete record.");
       }
@@ -156,6 +195,59 @@ const [isOpen, setIsOpen] = useState(false);
     }
   };
 
+  const handleselectDateval = (branch,dateval) => {
+    axios
+    .get(apiUrl + '?action=getReports') // in this place use two api so mention it(action).
+    .then((response) => {
+      if(branch && !dateval){
+        const filterbranch = response.data.filter((item)=>item.BranchName === branch)
+        setDataArray(filterbranch); 
+        const total = totalval(filterbranch)
+        setTotalAmount(total);
+       }
+       else if(!branch && dateval){
+        if(curretnBranchname){
+          const filterbranch = response.data.filter((item)=>item.BranchName === curretnBranchname)
+          const formattedDate = format(dateval, "yyyy-MM-dd"); // Format the selected date
+          const filteredate = filterbranch.filter((item) => item.Date === formattedDate); // Filter by date
+          setDataArray(filteredate); 
+          const total = totalval(filteredate)
+          setTotalAmount(total);
+          return
+        }
+        const formattedDate = format(dateval, "yyyy-MM-dd"); // Format the selected date
+        const filteredate = response.data.filter((item) => item.Date === formattedDate); // Filter by date
+        setDataArray(filteredate); 
+        const total = totalval(filteredate)
+        setTotalAmount(total);
+       }
+       else if(!branch && !dateval){
+        if(curretnBranchname){
+          const filterbranch = response.data.filter((item)=>item.BranchName === curretnBranchname)
+          setDataArray(filterbranch); 
+          const total = totalval(filterbranch)
+          setTotalAmount(total);
+        return
+        }
+        setDataArray(response.data); 
+        const total = totalval(response.data)
+        setTotalAmount(total);
+       }
+       else{
+        const filterbranch = response.data.filter((item)=>item.BranchName === branch)
+        const formattedDate = format(dateval, "yyyy-MM-dd"); // Format the selected date
+        const filteredate = filterbranch.filter((item) => item.Date === formattedDate); // Filter by date
+        setDataArray(filteredate); 
+        const total = totalval(filteredate)
+        setTotalAmount(total);
+       }
+     
+    })
+    .catch((error) => {
+      console.error("Error fetching daily reports:", error);
+      toast.error("Error fetching daily reports");
+    });
+  }
   
   const handleListToggle = () => {
     setShowList(!showList);
@@ -188,7 +280,7 @@ const [isOpen, setIsOpen] = useState(false);
                   </div>
                 </Popup>
 
-      {openpopup && (
+                {openpopup && (
                 <div className="menu_card ">
                    <div className="userName ">
                     <FontAwesomeIcon icon={faUser} className="color_logout mrg_rgt"/>
@@ -221,13 +313,74 @@ const [isOpen, setIsOpen] = useState(false);
                  
                   { curretnBranchname && 
         <div  className="branchname">
-          <div className="branch_style sticky-div">
+          <div className="branchName_style">
             {curretnBranchname}
           </div>
         </div> }
+
+        {showList && (
+        <div className={currentRole ==='Admin' ? "form-container mrg_tp20" : "form-container"}>
+           { currentRole === "Admin" && 
+                              <div className="form-group mrg_bmt10pf">
+                              <div className='head_style'>Branch Name : </div>
+                              <div className="fomr_row">
+                              <select
+                                  className="branch_style"
+                                  value={selectBranchname} // Bind state value
+                                  onChange={handleBranchChange} // Update state when the user selects a branch
+                                >
+                               
+                                  <option value="" disabled>Select Branch</option>
+                                  {/* Map through the branches array and create an option for each */}
+                                  {branchNamelist && branchNamelist.map((branch) => (
+                                    <option key={branch.Sno} value={branch.Branchname}>
+                                      {branch.Branchname}
+                                    </option>
+                                  ))}
+                                </select>
+                                <FontAwesomeIcon icon={faCircleXmark}
+                                onClick={clearBranch}
+                                 className="icon_cl color_logout"/>
+                              </div>
+                             
+                              
+                                
+                            </div>
+                        }
+          <div className="form-group">
+                      <label htmlFor="date-filter"  className='head_style'>Select Date: </label>
+                      <div className="fomr_row">
+                      <DatePicker
+                        selected={filterDate}
+                        dateFormat="yyyy-MM-dd"
+                        className="mrg_top10 custom-datepicker"
+                        maxDate={new Date()}
+                        id="date-filter"
+                        placeholderText="Select a date"
+                        onChange={(date) => handleSelectDate(date)}
+                      />
+                      <FontAwesomeIcon icon={faCircleXmark}
+                                            onClick={clearDate}
+                                             className="icon_cl color_logout"/>
+                      </div>
+                     
+                    </div>
+                    { currentRole !== "Admin" && 
+                <button className="back_btn" onClick={handleListToggle}>
+                  Back
+                </button>
+                  }
+                </div>
+                )
+      
+        }
+
+         {!showList &&
         <button className="listbtn submitbutton" onClick={handleListToggle}>
-          {showList ? "Back" : "Daily Expenditure List"}
+         Daily Expenditure List
         </button>
+        }
+  
 
         {!showList && (
           <div className="card_design3">
@@ -249,13 +402,13 @@ const [isOpen, setIsOpen] = useState(false);
                 <div className="body3 row_align1  itemname_align">
                   <span>Item Name</span>
                   <Select
-  options={Itemnameoptions} // Options for dropdown
-  value={Itemname ? { value: Itemname, label: Itemname } : null} // Current selected value
-  onChange={(selectedOption) => setItemname(selectedOption.value)} // Update state when an option is selected
-  placeholder="Select an item"
-  isSearchable // Makes the dropdown searchable
-  className="form-select" // Add any custom styles
-/>
+                  options={Itemnameoptions} // Options for dropdown
+                  value={Itemname ? { value: Itemname, label: Itemname } : null} // Current selected value
+                  onChange={(selectedOption) => setItemname(selectedOption.value)} // Update state when an option is selected
+                  placeholder="Select an item"
+                  isSearchable // Makes the dropdown searchable
+                  className="form-select" // Add any custom styles
+                />
 
                 </div>
                 
@@ -282,25 +435,14 @@ const [isOpen, setIsOpen] = useState(false);
            <div className="cashtaken">Total Expenditure</div>
            <div className="total">₹ {totalAmount.toFixed(2)} </div>{/* Format to 2 decimal places */}
 </div></center>
-<div className="filter_container ">
-              <label htmlFor="date-filter" style={{ marginRight: "10px" }}>
-                Filter by Date:
-              </label>
-              <DatePicker
-                selected={filterDate}
-                dateFormat="yyyy-MM-dd"
-                onChange={(date) => setFilterDate(date)}
-                id="date-filter"
-                placeholderText="Select a date"
-                isClearable // Allows clearing the date filter
-              />
-            </div>
+
             <center>         
                <div className="table_align3  scrollit_de table_scroll">
             <table className="padding_top3">
               <thead className="table_header3">
                 <tr>
-                  <th>S. No</th>
+                  <th>S. No</th> 
+                  <th>Branch Name</th>
                   <th>Date</th>
                   <th>Item Name</th>
                   <th>Amount</th>
@@ -312,21 +454,27 @@ const [isOpen, setIsOpen] = useState(false);
                   dataArray.map((entry, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
+                      <td>{entry.BranchName}</td>
                       <td>{entry.Date}</td>
                       <td>{entry.Itemname}</td>
                       <td>{entry.Amount}</td>
                          <td>
-                         <FaTrashAlt
-                          className="iconPaddig"
-                          onClick={(e) => handleDelete(e, entry)}
-                        />
+                         { currentRole === "Admin" ?
+                         <button className="btn_disable">
+                              <FaTrashAlt />
+                         </button>
+                          : 
+                        <FaTrashAlt
+                        className="iconPaddig"
+                        onClick={(e) => handleDelete(e, entry)} />
+                      }
                                             </td>
 
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5" className="center_align">No data available</td>
+                    <td colSpan="6" className="center_align">No data available</td>
                   </tr>
                 )}
               </tbody>

@@ -9,11 +9,12 @@ import { format } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import {  FaEdit, FaTrashAlt } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOut, faUser  } from '@fortawesome/free-solid-svg-icons';
+import { faSignOut, faUser ,faCircleXmark  } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom"; 
 import Popup from 'reactjs-popup';
 
 const apiUrl = "http://localhost/hourly_report/hourly_api.php";
+const user_api = "http://localhost/hourly_report/User_Master.php";
 
 function HourlyReport() {
   const [startDate, setStartDate] = useState(new Date());
@@ -26,13 +27,16 @@ function HourlyReport() {
   const [totalAmount, settotalAmount] = useState("");
   const [currentID, setID] = useState("");
   const [newID, setnewID] = useState("");
-  const [Showlist, setShowlist] = useState(false);
+  const [Showlist, setShowlist] = useState(true);
   const [showsubmit, setSubmitButton] = useState(true);
+  const [currentRole, setcurrentRole] = useState();
   const [RecentCashinHand, setRecentCashinHand] = useState("");
   const formattedDate = format(startDate, "yyyy-MM-dd");
   const getIDFormat = format(startDate, "yyyyMMdd");
   const [getRecentCash, setRecentCash] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [branchNamelist, setbranchNamelist] = useState("");
+  const [selectBranchname, setselectBranchname] = useState("");
  const [currentuser, setcurrentuser] = useState();
    const [currentuserName, setcurrentuserName] = useState();
    const [curretnBranchname, setcurretnBranchname] = useState();
@@ -55,26 +59,28 @@ function HourlyReport() {
 
   useEffect(() => {
     // Update filtered data state
-    getapi();
    
     const value =  JSON.parse(localStorage.getItem('currentUsername'));
     const usernameVal = value[0].UserName
+    setcurrentRole(value[0].UserRole)
     setcurrentuser(usernameVal)
     const nameParts = usernameVal.charAt(0);
     setcurrentuserName(nameParts);
     setcurretnBranchname(value[0].BranchName)
+   
+    getapi(value[0].BranchName,'');
+    getBranchName();
+   
   }, []);
 
 
-  useEffect(() => {
-    // Update filtered data state
-    setTimeout(() => {
-    const formattedDate = format(startDate, "yyyy-MM-dd"); // Format the selected date
-    const filtered = Array.filter((item) => item.Date === formattedDate); // Filter by date
-    setFilteredData(filtered);
-  }, 500);
+  // useEffect(() => {
+  //   // Update filtered data state
+  //   setTimeout(() => {
+
+  // }, 500);
    
- }, [startDate, Array]);
+//  }, [startDate, Array]);
 
   const Time = [
     { value: "24", text: "" },
@@ -104,27 +110,53 @@ function HourlyReport() {
     { value: "23", text: "11:00 PM" },
   ];
 
-
-  const getapi = () => {
+  const handleBranchChange = (e) => {
+    setselectBranchname(e.target.value);
+    getapi(e.target.value,'')
+  };
+  const getapi = (Branch,date) => {
     axios
       .get(apiUrl)
       .then((response) => {
-        setArray(response.data);
+        if(Branch){
+          const filterbranch = response.data.filter((item)=>item.BranchName === Branch)
+
+          setArray(filterbranch);
+          const startDateval = date === '' ? startDate : date;
+          const formattedDate = format(startDateval, "yyyy-MM-dd"); // Format the selected date
+          const filtered = filterbranch.filter((item) => item.Date === formattedDate); // Filter by date
+          setFilteredData(filtered);
+        }
+        else{
+          setArray(response.data);
+          const startDateval = date === '' ? startDate : date;
+          const formattedDate = format(startDateval, "yyyy-MM-dd"); // Format the selected date
+          const filtered = response.data.filter((item) => item.Date === formattedDate); // Filter by date
+          setFilteredData(filtered);
+        }
       })
       .catch((error) => console.error("Error fetching users:", error));
   };
 
+  const getBranchName = () => {
+    axios
+      .get(user_api+'?action=getbranchName')
+      .then((response) => {
+        setbranchNamelist(response.data);
+      })
+      .catch((error) => console.error("Error fetching users:", error));
+  };
+  const clearDate=()=>{
+    setselectBranchname("")
+    getapi('','')
+  }
   const OpenUser=()=>{
     setopenpopup(!openpopup);
   }
   const OpenPopupcard = () => {
     setIsOpen(true)
   }
-  const handleDateChange = (date) => {
-    setStartDate(date);
-    getapi()
-  };
-
+ 
   const usedTimes = filteredData.map((item) => item.endtime);
 
   // Filter out used times from the Time array
@@ -205,6 +237,8 @@ function HourlyReport() {
           Sales: 0,
           totalamount: 0,
           cashinhand: 0,
+          BranchName:curretnBranchname,
+          ManagerName:currentuser
         };
         //when you entered unorder data also calculated
         const updatedData = [...filteredData, newarray];
@@ -245,7 +279,7 @@ function HourlyReport() {
           .post(apiUrl, processedData)
           .then((response) => {
             // alert(response.data.message);
-            getapi();
+            getapi(curretnBranchname,'');
           })
           .catch((error) => console.error("Error adding user:", error));
       } else {
@@ -264,6 +298,7 @@ function HourlyReport() {
           Sales: 0,
           totalamount: 0,
           cashinhand: 0,
+          BranchName:curretnBranchname
         };
         
 
@@ -304,7 +339,7 @@ function HourlyReport() {
         .put(apiUrl, processedData)
         .then((response) => {
           console.log(response.data.message);
-          getapi();  // Optional: refresh the data
+          getapi(curretnBranchname,'');  // Optional: refresh the data
         })
         .catch((error) => console.error("Error updating data:", error));        
 
@@ -319,7 +354,9 @@ function HourlyReport() {
     try {
       const response = await axios.delete(apiUrl, {
         data: { Date : item.Date,
-          ID: item.ID},
+          ID: item.ID,
+          BranchName:curretnBranchname
+        },
          // Send the record ID as payload
       });
 
@@ -330,28 +367,12 @@ function HourlyReport() {
       }
 
       // Fetch updated data after deletion
-      fetchData();
+      getapi(curretnBranchname,'');
     } catch (error) {
       console.error("Error deleting record:", error);
     }
   };
 
-  const fetchData = async () => {
-    try {
-      axios
-      .get(apiUrl)
-      .then((response) => {
-        const formattedDate = format(startDate, "yyyy-MM-dd"); // Format the selected date
-        const filtered = response.data.filter((item) => item.Date === formattedDate); // Filter by date
-        setFilteredData(filtered);
-       
-      })
-      .catch((error) => console.error("Error fetching users:", error));
-     
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
   const handleUpdate = (e, item) => {
     e.preventDefault();
@@ -370,9 +391,23 @@ function HourlyReport() {
   };
 
   const showlistitem = () => {
-    
+    setPettyCash("");
+    setAmountTaken("");
+    setstartTime("24");
     setShowlist(true); //open list form
   };
+  const backlistitem = (event) => {
+    
+    setShowlist(false); //open list form
+    
+  };
+
+  const handleSelectDate = (value)=>{
+    
+    setStartDate(value)
+    const val = curretnBranchname === "" ? selectBranchname : curretnBranchname;
+    getapi(val,value)
+  }
 
   const notify = () => toast.error("Please fill all details");
 
@@ -434,7 +469,7 @@ function HourlyReport() {
   </div></div>
   { curretnBranchname && 
         <div  className="branchname">
-          <div className="branch_style">
+          <div className="branchName_style">
             {curretnBranchname}
           </div>
         </div> }
@@ -448,8 +483,13 @@ function HourlyReport() {
         {/* create form start */}
         {Showlist === false && (
           <div className="card_design">
-            <form onSubmit={handleSubmit}>
+            <form >
+            {/* <div className="cancel_bnt_card">
+              <FontAwesomeIcon  icon={faCircleXmark} />
+              </div> */}
+            
               <div className="body_padding">
+             
                 <div >
                   <DatePicker
                     showIcon
@@ -457,7 +497,7 @@ function HourlyReport() {
                     dateFormat="yyyy-MM-dd"
                     minDate={new Date()}
                     maxDate={new Date()}
-                    onChange={(date) => handleDateChange(date)}
+                    onChange={(date) => setStartDate(date)}
                   />
                 </div>
                 <div className="row_align">
@@ -500,9 +540,16 @@ function HourlyReport() {
                 </div>
               </div>
               {Showlist === false && (
-          <button type="submit" className="submitbutton submit_margin_btm" onClick={handleSubmit}>
-            {showsubmit === false ? "Update" : "Submit"}
-          </button>
+                <div>
+                  <button type="submit" className="submitbutton submit_margin_btm upd_btn" onClick={handleSubmit}>
+                    {showsubmit === false ? "Update" : "Submit"}
+                  </button>
+                  <button type="button"  className="bck_btn submit_margin_btm"  onClick={showlistitem}>
+                   Back
+                  </button>
+                </div>
+         
+          
         )}
             </form>
                {/* form end */}
@@ -513,24 +560,61 @@ function HourlyReport() {
      
       </div>
 
+      {Showlist === true && (
+        <div className={currentRole ==='Admin' ? "form-container mrg_tp20" : "form-container"}>
+          {/* // <div className="form-container"> */}
+           { currentRole === "Admin" && 
+            <div className="form-group mrg_bmt10pf">
+            <div className='head_style'>Branch Name : </div>
+            <div className="fomr_row">
+            <select
+                className="branch_style"
+                value={selectBranchname} // Bind state value
+                onChange={handleBranchChange} // Update state when the user selects a branch
+              >
+             
+                <option value="" disabled>Select Branch</option>
+                {/* Map through the branches array and create an option for each */}
+                {branchNamelist && branchNamelist.map((branch) => (
+                  <option key={branch.Sno} value={branch.Branchname}>
+                    {branch.Branchname}
+                  </option>
+                ))}
+              </select>
+              <FontAwesomeIcon icon={faCircleXmark}
+              onClick={clearDate}
+               className="icon_cl color_logout"/>
+            </div>
+           
+            
+              
+          </div>
+      }
+          <div className="form-group">
+            <label className='head_style'>Select Date: </label>
+            <DatePicker
+              selected={startDate}
+              dateFormat="yyyy-MM-dd"
+              className="mrg_top10 custom-datepicker"
+              maxDate={new Date()}
+              onChange={handleSelectDate}
+            />
+          </div>
+          { currentRole !== "Admin" && 
+          <button className="back_btn"  onClick={backlistitem}>
+            Back
+          </button>
+            }
+        </div>
+
+      )}
+
       {/* lisst screen start */}
 
       {Showlist === true && (
         <form className="marginleft">
-          <button className="listbtn submitbutton" onClick={showlistitem}>
-            Back
-          </button>
-          <div >
-            <label htmlFor="date-picker">Select Date: </label>
-            <DatePicker
-              selected={startDate}
-              dateFormat="yyyy-MM-dd"
-              className="mrg_top10"
-              maxDate={new Date()}
-              onChange={(date) => setStartDate(date)}
-              id="date-picker"
-            />
-          </div>
+         
+       
           <div className="App scrollit_HR table_scroll">
             <center>
             <table className="padding_top">
@@ -538,6 +622,7 @@ function HourlyReport() {
                 <tr>
                   <th className="HeadingPaddig">Sno.</th>
                   <th className="HeadingPaddig">ID</th>
+                  <th className="HeadingPaddig">Branch</th>
                   <th className="HeadingPaddig">Date</th>
                   <th className="HeadingPaddig">Time</th>
                   <th className="HeadingPaddig">Petty Cash</th>
@@ -557,6 +642,7 @@ function HourlyReport() {
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{item.ID}</td>
+                      <td>{item.BranchName}</td>
                       <td>{item.Date}</td>
                       <td>{item.endtime}</td>
                       <td>{item.pettycash}</td>
@@ -565,20 +651,38 @@ function HourlyReport() {
                       <td>{Math.abs(item.totalamount)}</td>
                       <td>{Math.abs(item.cashinhand)}</td>
                       <td>
+                    
+                      <div>
+                      { currentRole === "Admin" ?
+                        <button  className="btn_disable" disabled>
                         <FaEdit
-                          className="iconPaddig"
-                          onClick={(e) => handleUpdate(e, item)}
                         />
+                       </button> :
+                      
+                      <FaEdit
+                       className="iconPaddig"
+                        
+                       onClick={(e) => handleUpdate(e, item)}
+                     />
+                        }
+                         { currentRole === "Admin" ?
+                        <button className="btn_disable" disabled>
                         <FaTrashAlt
-                          className="iconPaddig"
-                          onClick={(e) => handleDelete(e, item)}
                         />
+                        </button> :
+                         <FaTrashAlt
+                         className="iconPaddig"
+                         onClick={(e) => handleDelete(e, item)}
+                       />
+                         }
+                      </div>
+                      
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="10" className="center_align">
+                    <td colSpan="11" className="center_align">
                       No records available for the chosen date.
                     </td>
                   </tr>

@@ -12,7 +12,7 @@
     
 }
 .body_padding{
-    padding: 25px; 
+    padding: 25px 25px 25px 25px; 
     font-family: 'Courier New', Courier, monospace;
 }
 
@@ -375,7 +375,7 @@ select:focus {
   margin-right: 24px;
 }
 .mrg_top10{
-  margin-top: 10px;
+  margin-top: 4px;
 }
 .branchname {
   display: flex;
@@ -388,4 +388,125 @@ select:focus {
     border-radius: 18px;
     margin-top: 10px;
     color:white;
+}
+
+
+.form-container {
+  display: flex; 
+  align-items: center; 
+  gap: 20px; 
+  flex-wrap: wrap;
+  justify-content: end;
+  padding-right: 1%;
+}
+
+.form-group {
+  display: flex; 
+  align-items: center; 
+}
+
+
+.custom-datepicker {
+  margin-left: 10px; 
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
+@media (max-width: 768px) {
+  .form-container {
+    flex-direction: column;
+    gap: 0px !important;
+    margin-top: 11px;
+
+  }
+
+  .custom-datepicker {
+    width: auto; 
+  }
+
+  .listbtn.submitbutton {
+    width: 100%; 
+  }
+}
+
+.back_btn{
+  padding: 9px 24px 9px 24px;
+  margin-top: 10px;
+  background-color: #1995AD;
+  color: white;
+  width: auto;
+  border-radius: 24px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.back_btn:hover{
+  background-color: #126e8c;
+}
+.branch_style{
+  width: 160px;
+  border: 1px solid #ccc;
+  padding: 3px;
+  border-radius: 4px;
+  background: none !important;
+  margin-top: 6px;
+
+}
+.branch_style:hover{
+  background: none !important;
+  border: 1px solid #ccc;
+}
+.mrg_bmt10pf{
+  margin-bottom: 9px;
+}
+.mrg_tp20{
+  margin-top: 20px;
+  margin-right: 5%;
+}
+.fomr_row{
+  display: flex;
+  flex-direction: row !important;
+}
+.icon_cl{
+  padding: 9px 8px 6px 8px;
+}
+.upd_btn{
+  margin-right: 10px;
+}
+.bck_btn{
+  background-color: white;
+  color: #1995AD;
+  width: auto;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 20px;
+  border: 1px solid #1995AD;
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  margin-top: 2%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.cancel_bnt_card{
+  text-align: right;
+  color: #1995AD;
+  padding: 13px;
+  font-size: 115%;
+  margin-right: -16%;
+}
+.btn_disable{
+  border: none;
+  background: none;
+  padding: 10px;
+  color: #1995AD; 
+  font-size: 18px;
+}
+.head_style{
+  font-weight: 600;
 }

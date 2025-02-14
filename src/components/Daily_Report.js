@@ -9,14 +9,16 @@ import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOut, faUser  } from '@fortawesome/free-solid-svg-icons';
+import { faSignOut, faUser ,faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import Popup from 'reactjs-popup';
 import { useNavigate } from "react-router-dom"; 
 
 const apiUrl = "http://localhost/hourly_report/Daily_Report_api.php";
+const user_api = "http://localhost/hourly_report/User_Master.php";
 
 function DailyReport() {
   const [startDate, setStartDate] = useState(new Date());
+  const [selectDate, setselectDate] = useState(new Date());
   const [cashAmount, setCashAmount] = useState("");
   const [reportedTo, setReportedTo] = useState("");
   const [cashHolder, setCashHolder] = useState("");
@@ -26,15 +28,18 @@ function DailyReport() {
   const [reportedToOptions, setReportedToOptions] = useState([]); // State for dropdown options
   const [cashholderOptions, setCashHolderOptions] = useState([]);
   const [GPayHolderOptions, setGPayHolderOptions] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+  const [wholeArray, setwholeArray] = useState([]);
   const [holderCashTaken, setHolderCashTaken] = useState({});
 
-  const [showList, setShowList] = useState(false);
+  const [showList, setShowList] = useState(true);
   const [showsubmit, setSubmitButton] = useState(true);
   const formattedDate = format(startDate, "yyyy-MM-dd");
   const [Total, setTotal] = useState("");
   const [openpopup, setopenpopup] = useState();
+   const [currentRole, setcurrentRole] = useState();
   const [currentuser, setcurrentuser] = useState();
+    const [branchNamelist, setbranchNamelist] = useState("");
+    const [selectBranchname, setselectBranchname] = useState("");
   const [currentuserName, setcurrentuserName] = useState();
   const [Array, setArray] = useState([
     {
@@ -61,36 +66,18 @@ function DailyReport() {
   //useeffect - render every page refresh (1st render this function)
   useEffect(() => {
     // Fetch options for the "Reported To" dropdown
-    getUserapi()
-    getapi()
+    
     const value =  JSON.parse(localStorage.getItem('currentUsername'));
+    setcurrentRole(value[0].UserRole)
     const usernameVal = value[0].UserName
     setcurrentuser(usernameVal)
     const nameParts = usernameVal.charAt(0);
     setcurrentuserName(nameParts);
     setcurretnBranchname(value[0].BranchName)
+    getUserapi()
+    getapi(value[0].BranchName)
+    getBranchName();
   }, []);
-
-
-  // Cashtaken with Name
-  useEffect(() => {
-    setTimeout(() => {
-      const holderCashTaken = {};
-      Array.forEach((entry) => {
-        if (entry.cashHolder) {
-          if (!holderCashTaken[entry.cashHolder]) {
-            holderCashTaken[entry.cashHolder] = 0;
-          }
-          holderCashTaken[entry.cashHolder] += parseFloat(entry.cashAmount || 0);
-        }
-      });
-      console.log("HolderCashTaken Data:", holderCashTaken);
-      setHolderCashTaken(holderCashTaken);
-    }, 500);
-  }, [Array]);
-
-
-
 
 
   //get the owner list via api
@@ -110,20 +97,181 @@ function DailyReport() {
       })
       .catch((error) => console.error("Error fetching users:", error));
   };
-
+  const handleBranchChange = (e) => {
+    setselectBranchname(e.target.value);
+    handleselectDateval(e.target.value,selectDate)
+  };
+  const handleSelectDate = (value)=>{
+    setselectDate(value)
+    handleselectDateval(selectBranchname,value)
+  }
+  const getBranchName = () => {
+    axios
+      .get(user_api+'?action=getbranchName')
+      .then((response) => {
+        setbranchNamelist(response.data);
+      })
+      .catch((error) => console.error("Error fetching users:", error));
+  };
    //get the daily report list via api
-  const getapi = () => {
+  const getapi = (Branch) => {
     axios
       .get(apiUrl + '?action=getReports') // in this place use two api so mention it(action).
       .then((response) => {
-        setArray(response.data);
+        setwholeArray(response.data)
+        if(Branch){
+          const filterbranch = response.data.filter((item)=>item.BranchName === Branch)
+          setArray(filterbranch); 
+          const holderCashTaken = {};
+          filterbranch.forEach((entry) => {
+          if (entry.cashHolder) {
+            if (!holderCashTaken[entry.cashHolder]) {
+              holderCashTaken[entry.cashHolder] = 0;
+            }
+            holderCashTaken[entry.cashHolder] += parseFloat(entry.cashAmount || 0);
+          }
+        });
+        // console.log("HolderCashTaken Data:", holderCashTaken);
+        setHolderCashTaken(holderCashTaken);
+        }
+        else{
+          setArray(response.data); 
+          const holderCashTaken = {};
+          response.data.forEach((entry) => {
+          if (entry.cashHolder) {
+            if (!holderCashTaken[entry.cashHolder]) {
+              holderCashTaken[entry.cashHolder] = 0;
+            }
+            holderCashTaken[entry.cashHolder] += parseFloat(entry.cashAmount || 0);
+          }
+        });
+        // console.log("HolderCashTaken Data:", holderCashTaken);
+        setHolderCashTaken(holderCashTaken);
+        }
+            
+              
+       
       })
       .catch((error) => {
         console.error("Error fetching daily reports:", error);
         toast.error("Error fetching daily reports");
       });
   }
+  const handleselectDateval = (branch,dateval) => {
+    axios
+    .get(apiUrl + '?action=getReports') // in this place use two api so mention it(action).
+    .then((response) => {
+      if(branch && !dateval){
+        const filterbranch = response.data.filter((item)=>item.BranchName === branch)
+        setArray(filterbranch); 
+        const holderCashTaken = {};
+        filterbranch.forEach((entry) => {
+        if (entry.cashHolder) {
+          if (!holderCashTaken[entry.cashHolder]) {
+            holderCashTaken[entry.cashHolder] = 0;
+          }
+          holderCashTaken[entry.cashHolder] += parseFloat(entry.cashAmount || 0);
+        }
+        });
+        // console.log("HolderCashTaken Data:", holderCashTaken);
+        setHolderCashTaken(holderCashTaken);
+       }
+       else if(!branch && dateval){
+        if(curretnBranchname){
+          const filterbranch = response.data.filter((item)=>item.BranchName === curretnBranchname)
+          const formattedDate = format(dateval, "yyyy-MM-dd"); // Format the selected date
+          const filteredate = filterbranch.filter((item) => item.Date === formattedDate); // Filter by date
+          setArray(filteredate); 
+          const holderCashTaken = {};
+          filteredate.forEach((entry) => {
+          if (entry.cashHolder) {
+            if (!holderCashTaken[entry.cashHolder]) {
+              holderCashTaken[entry.cashHolder] = 0;
+            }
+            holderCashTaken[entry.cashHolder] += parseFloat(entry.cashAmount || 0);
+          }
+          });
+          // console.log("HolderCashTaken Data:", holderCashTaken);
+          setHolderCashTaken(holderCashTaken);
+          return
+        }
+        const formattedDate = format(dateval, "yyyy-MM-dd"); // Format the selected date
+        const filteredate = response.data.filter((item) => item.Date === formattedDate); // Filter by date
+        setArray(filteredate); 
+        const holderCashTaken = {};
+        filteredate.forEach((entry) => {
+        if (entry.cashHolder) {
+          if (!holderCashTaken[entry.cashHolder]) {
+            holderCashTaken[entry.cashHolder] = 0;
+          }
+          holderCashTaken[entry.cashHolder] += parseFloat(entry.cashAmount || 0);
+        }
+        });
+        // console.log("HolderCashTaken Data:", holderCashTaken);
+        setHolderCashTaken(holderCashTaken);
+       }
+       else if(!branch && !dateval){
+        if(curretnBranchname){
+          const filterbranch = response.data.filter((item)=>item.BranchName === curretnBranchname)
+          setArray(filterbranch); 
+          const holderCashTaken = {};
+          filterbranch.forEach((entry) => {
+          if (entry.cashHolder) {
+            if (!holderCashTaken[entry.cashHolder]) {
+              holderCashTaken[entry.cashHolder] = 0;
+            }
+            holderCashTaken[entry.cashHolder] += parseFloat(entry.cashAmount || 0);
+          }
+        });
+        setHolderCashTaken(holderCashTaken);
+        return
+        }
+        setArray(response.data); 
+        const holderCashTaken = {};
+        response.data.forEach((entry) => {
+        if (entry.cashHolder) {
+          if (!holderCashTaken[entry.cashHolder]) {
+            holderCashTaken[entry.cashHolder] = 0;
+          }
+          holderCashTaken[entry.cashHolder] += parseFloat(entry.cashAmount || 0);
+        }
+      });
+      // console.log("HolderCashTaken Data:", holderCashTaken);
+      setHolderCashTaken(holderCashTaken);
+       }
+       else{
+        const filterbranch = response.data.filter((item)=>item.BranchName === branch)
+        const formattedDate = format(dateval, "yyyy-MM-dd"); // Format the selected date
+        const filteredate = filterbranch.filter((item) => item.Date === formattedDate); // Filter by date
+        setArray(filteredate); 
+        const holderCashTaken = {};
+        filteredate.forEach((entry) => {
+        if (entry.cashHolder) {
+          if (!holderCashTaken[entry.cashHolder]) {
+            holderCashTaken[entry.cashHolder] = 0;
+          }
+          holderCashTaken[entry.cashHolder] += parseFloat(entry.cashAmount || 0);
+        }
+      });
+      // console.log("HolderCashTaken Data:", holderCashTaken);
+      setHolderCashTaken(holderCashTaken);
+       }
+     
+    })
+    .catch((error) => {
+      console.error("Error fetching daily reports:", error);
+      toast.error("Error fetching daily reports");
+    });
+  }
 
+  const clearBranch=()=>{
+    setselectBranchname("")
+    handleselectDateval('',selectDate)
+  }
+  const clearDate=()=>{
+    setselectDate(null);
+    handleselectDateval(selectBranchname,'')
+  }
   //get the Day based on given date
   const getDayName = (dateString) => {
     const date = new Date(dateString);
@@ -189,6 +337,8 @@ function DailyReport() {
           ActualCollection: 0,
           CashTaken: CashTaken,
           TotalCashinTaken: 0,
+          BranchName:curretnBranchname,
+          ManagerName:currentuser
         };
         //bind the new array to existing array
         const updatedData = [...Array, newarray];
@@ -221,7 +371,7 @@ function DailyReport() {
           .post(apiUrl, processedData)
           .then((response) => {
             toast.success("Entry added successfully!");
-            getapi()
+            getapi(curretnBranchname)
             setShowList(true); // Show the report list
           })
           .catch((error) => {
@@ -247,6 +397,7 @@ function DailyReport() {
           ActualCollection: 0,
           CashTaken: CashTaken,
           TotalCashinTaken: 0,
+          BranchName:curretnBranchname,
         };
 
 
@@ -289,7 +440,7 @@ function DailyReport() {
           .put(apiUrl, processedData)
           .then((response) => {
             toast.success("Entry update successfully!");
-            getapi()
+            getapi(curretnBranchname)
             setShowList(true); // Show the report list
           })
           .catch((error) => {
@@ -312,11 +463,11 @@ function DailyReport() {
     // alert(item.Date)
     try {
       const response = await axios.delete(apiUrl, {
-        data: { Date: item.Date },
+        data: { Date: item.Date,BranchName:curretnBranchname },
       });
       if (response.status == 200) {
         toast.success("Data delete successfully!");
-        getapi()
+        getapi(curretnBranchname)
       } else if (response.data.error) {
         alert(response.data.error);
       }
@@ -402,6 +553,21 @@ function DailyReport() {
       
             </div>
           </Popup>
+          {openpopup && (
+          <div className="menu_card ">
+             <div className="userName ">
+              <FontAwesomeIcon icon={faUser} className="color_logout mrg_rgt"/>
+              <div className="cls_imagecolor">{currentuser}</div>
+             </div>
+           
+             <div className="logout_btn cursor_logout" onClick={OpenPopupcard}>
+                    <FontAwesomeIcon icon={faSignOut} className="mrg_lft_card color_logout"/>
+                    <button className="logout_alignment" >
+                      Logout
+                    </button>
+                  </div>
+          </div>
+        )}
       <div className="App2">
         <div className="header_font2"><b>DAILY REPORT</b><div className="header_buttons">
             <button className="icon_button user_border_radius" type="submit"   title={currentuser} onClick={OpenUser}>
@@ -416,24 +582,10 @@ function DailyReport() {
               <FaSignOutAlt size={20} />
             </button> */}
           </div></div>
-          {openpopup && (
-          <div className="menu_card ">
-             <div className="userName ">
-              <FontAwesomeIcon icon={faUser} className="color_logout mrg_rgt"/>
-              <div className="cls_imagecolor">{currentuser}</div>
-             </div>
-           
-             <div className="logout_btn cursor_logout" onClick={handleExit}>
-                    <FontAwesomeIcon icon={faSignOut} className="mrg_lft_card color_logout"/>
-                    <button className="logout_alignment" >
-                      Logout
-                    </button>
-                  </div>
-          </div>
-        )}
-         { curretnBranchname && 
+     
+        { curretnBranchname && 
         <div  className="branchname">
-          <div className="branch_style sticky-div">
+          <div className="branchName_style">
             {curretnBranchname}
           </div>
         </div> }
@@ -529,12 +681,67 @@ function DailyReport() {
             </form>
           </div>
         )}
+
+        
+              {showList === true && (
+                <div className={currentRole ==='Admin' ? "form-container mrg_tp20" : "form-container"}>
+                  {/* // <div className="form-container"> */}
+                   { currentRole === "Admin" && 
+                    <div className="form-group mrg_bmt10pf">
+                    <div className='head_style'>Branch Name : </div>
+                    <div className="fomr_row">
+                    <select
+                        className="branch_style"
+                        value={selectBranchname} // Bind state value
+                        onChange={handleBranchChange} // Update state when the user selects a branch
+                      >
+                     
+                        <option value="" disabled>Select Branch</option>
+                        {/* Map through the branches array and create an option for each */}
+                        {branchNamelist && branchNamelist.map((branch) => (
+                          <option key={branch.Sno} value={branch.Branchname}>
+                            {branch.Branchname}
+                          </option>
+                        ))}
+                      </select>
+                      <FontAwesomeIcon icon={faCircleXmark}
+                      onClick={clearBranch}
+                       className="icon_cl color_logout"/>
+                    </div>
+                   
+                    
+                      
+                  </div>
+              }
+                  <div className="form-group">
+                    <label className='head_style'>Select Date: </label>
+                    <div className="fomr_row">
+
+                    <DatePicker
+                      selected={selectDate}
+                      dateFormat="yyyy-MM-dd"
+                      className="mrg_top10 custom-datepicker"
+                      maxDate={new Date()}
+                      onChange={(date) => handleSelectDate(date)}
+                    />
+                        <FontAwesomeIcon icon={faCircleXmark}
+                      onClick={clearDate}
+                       className="icon_cl color_logout"/>
+                      </div>
+                  </div>
+                  { currentRole !== "Admin" && 
+                  <button className="back_btn_DR" onClick={showback}>
+                    Back
+                  </button>
+                    }
+                </div>
+        
+              )}
+
+
         {showList === true && (
           <div>
             <div> </div>
-            <button className="listbtn submitbutton" onClick={showback}>
-              Back
-            </button>
             <div className="card-container2">
               {Object.entries(holderCashTaken).length > 0 ? (
                 Object.entries(holderCashTaken).map(([cashHolder, total], index) => (
@@ -547,7 +754,9 @@ function DailyReport() {
                   </div>
                 ))
               ) : (
-                <div className="no-cards">No Cash Taken Data Found</div>
+                <div className="card2" style={{ height: '73px' }}>
+                <div className="no-cards" style={{marginTop: "13%"}}><b>No record Found</b></div>
+                </div>
               )}
             </div>
 
@@ -558,6 +767,7 @@ function DailyReport() {
               <thead className="table_header2">
                 <tr>
                   <th>S. No</th>
+                  <th>Branch Name</th>
                   <th>Date</th>
                   <th>Day</th>
                   <th>Cash Amount</th>
@@ -579,6 +789,7 @@ function DailyReport() {
                   Array.map((item, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
+                      <td>{item.BranchName}</td>
                       <td>{item.Date}</td>
                       <td>{item.Day}</td>
                       <td>{item.cashAmount}</td>
@@ -593,15 +804,20 @@ function DailyReport() {
                       <td>{Math.abs(item.TotalCashinTaken)}</td>
 
                       <td>
-
+                      { currentRole === "Admin" ? 
+                       <button  className="btn_disable" disabled>
+                        <FaEdit /> </button> :
                         <FaEdit
                           className="iconPaddig"
                           onClick={(e) => handleUpdate(e, item)}
-                        />
+                        />}
+                           { currentRole === "Admin" ? 
+                            <button  className="btn_disable" disabled>
+                        <FaTrashAlt /> </button> :
                         <FaTrashAlt
                           className="iconPaddig"
                           onClick={(e) => handleDelete(e, item)}
-                        />
+                        /> }
                       </td>
                     </tr>
 
@@ -609,7 +825,7 @@ function DailyReport() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="14" className="center_align">No records found</td>
+                    <td colSpan="15" className="center_align">No records found</td>
                   </tr>
                 )}
               </tbody>
