@@ -4,11 +4,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaTrashAlt } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import axios from "axios";
-import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOut, faUser,faCircleXmark  } from '@fortawesome/free-solid-svg-icons';
@@ -31,7 +30,7 @@ function DailyExpenditure() {
   const [openpopup, setopenpopup] = useState();
   const [curretnBranchname, setcurretnBranchname] = useState();
   const [selectBranchname, setselectBranchname] = useState("");
-     const [recentuser, setrecentuser] = useState();
+  const [recentuser, setrecentuser] = useState();
   const [branchNamelist, setbranchNamelist] = useState("");
  
 const [isOpen, setIsOpen] = useState(false);
@@ -55,14 +54,6 @@ const [isOpen, setIsOpen] = useState(false);
     getUserapi(); // Fetch item list
   }, []);
   
- 
-  
- // Filter data by selected date
- const filteredData = filterDate
- ? dataArray.filter(
-     (entry) => entry.Date === format(filterDate, "yyyy-MM-dd")
-   )
- : dataArray;
 
   // Fetch expenditure data
   const fetchApiData = (branchval) => {

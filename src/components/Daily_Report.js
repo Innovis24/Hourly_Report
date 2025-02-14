@@ -28,13 +28,11 @@ function DailyReport() {
   const [reportedToOptions, setReportedToOptions] = useState([]); // State for dropdown options
   const [cashholderOptions, setCashHolderOptions] = useState([]);
   const [GPayHolderOptions, setGPayHolderOptions] = useState([]);
-  const [wholeArray, setwholeArray] = useState([]);
   const [holderCashTaken, setHolderCashTaken] = useState({});
 
   const [showList, setShowList] = useState(true);
   const [showsubmit, setSubmitButton] = useState(true);
   const formattedDate = format(startDate, "yyyy-MM-dd");
-  const [Total, setTotal] = useState("");
   const [openpopup, setopenpopup] = useState();
    const [currentRole, setcurrentRole] = useState();
   const [currentuser, setcurrentuser] = useState();
@@ -118,7 +116,6 @@ function DailyReport() {
     axios
       .get(apiUrl + '?action=getReports') // in this place use two api so mention it(action).
       .then((response) => {
-        setwholeArray(response.data)
         if(Branch){
           const filterbranch = response.data.filter((item)=>item.BranchName === Branch)
           setArray(filterbranch); 
@@ -465,7 +462,7 @@ function DailyReport() {
       const response = await axios.delete(apiUrl, {
         data: { Date: item.Date,BranchName:curretnBranchname },
       });
-      if (response.status == 200) {
+      if (response.status === 200) {
         toast.success("Data delete successfully!");
         getapi(curretnBranchname)
       } else if (response.data.error) {

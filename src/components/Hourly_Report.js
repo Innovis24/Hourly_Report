@@ -23,17 +23,13 @@ function HourlyReport() {
   const [Pettycash, setPettyCash] = useState("");
   const [AmountTaken, setAmountTaken] = useState("");
   const [Sales, setSales] = useState("");
-  const [todayEntries, settodayEntries] = useState("");
-  const [totalAmount, settotalAmount] = useState("");
   const [currentID, setID] = useState("");
-  const [newID, setnewID] = useState("");
   const [Showlist, setShowlist] = useState(true);
   const [showsubmit, setSubmitButton] = useState(true);
   const [currentRole, setcurrentRole] = useState();
   const [RecentCashinHand, setRecentCashinHand] = useState("");
   const formattedDate = format(startDate, "yyyy-MM-dd");
   const getIDFormat = format(startDate, "yyyyMMdd");
-  const [getRecentCash, setRecentCash] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [branchNamelist, setbranchNamelist] = useState("");
   const [selectBranchname, setselectBranchname] = useState("");
@@ -169,7 +165,7 @@ function HourlyReport() {
   let SortedTime = []
    if(showsubmit === false){
     
-    const updatedTime = Time.filter((item)=>item.text == startTimeText)
+    const updatedTime = Time.filter((item)=>item.text === startTimeText)
     tempTime = [...filteredTime,...updatedTime]
     SortedTime = tempTime.sort((a, b) => {
       const timeA = a.value;
