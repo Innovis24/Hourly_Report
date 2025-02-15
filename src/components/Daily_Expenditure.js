@@ -11,7 +11,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOut, faUser,faCircleXmark  } from '@fortawesome/free-solid-svg-icons';
-import Popup from 'reactjs-popup';
+import Home from './Home'
+
+
 const apiUrl = "http://localhost/hourly_report/Daily_Expenditure.php";
 const user_api = "http://localhost/hourly_report/User_Master.php";
 
@@ -248,53 +250,8 @@ const [isOpen, setIsOpen] = useState(false);
   return (
     <div>
       <ToastContainer />
-        <Popup open={isOpen} onClose={closeModal} contentStyle={{
-                  width: '385px', 
-                  padding: '20px', 
-                  border: '1px solid #ccc',
-                  borderRadius: '8px',
-                   background: 'white'
-                }}>
-                  <div >
-                    <h2 className="fontFam">Are you sure you want to logout?</h2>
-                    <div className="popup_btn">
-                      <button className="btn_yesclr" onClick={handleExit}>Yes</button>
-                      <button className="btn_noClr" onClick={closeModal}>No</button>
-                    </div>
-            
-                  </div>
-                </Popup>
-
-                {openpopup && (
-                <div className="menu_card ">
-                   <div className="userName ">
-                    <FontAwesomeIcon icon={faUser} className="color_logout mrg_rgt"/>
-                    <div className="cls_imagecolor">{currentuser}</div>
-                   </div>
-                 
-                   <div className="logout_btn cursor_logout" onClick={OpenPopupcard}>
-                          <FontAwesomeIcon icon={faSignOut} className="mrg_lft_card color_logout"/>
-                          <button className="logout_alignment" >
-                            Logout
-                          </button>
-                        </div>
-                </div>
-              )}
       <div className="App">
-        <div className="header_font"><b>DAILY EXPENDITURE</b>
-        <div className="header_buttons">
-        <button className="icon_button user_border_radius" type="submit"   title={currentuser} onClick={OpenUser}>
-              {/* <FaUser size={20} /> */}
-              {recentuser}
-            </button>
-                    {/* <button
-              className="icon_button"
-              title="Logout"
-              onClick={handleExit} // Add click handler
-            >
-                      <FaSignOutAlt size={20} />
-                    </button> */}
-                  </div></div>
+      <Home  title="Daily Expenditure"  />
                  
                   { curretnBranchname && 
         <div  className="branchname">
@@ -351,8 +308,8 @@ const [isOpen, setIsOpen] = useState(false);
                      
                     </div>
                     { currentRole !== "Admin" && 
-                <button className="back_btn" onClick={handleListToggle}>
-                  Back
+                <button className="submitBtn" onClick={handleListToggle}>
+                  Add Expenditure
                 </button>
                   }
                 </div>
@@ -360,11 +317,6 @@ const [isOpen, setIsOpen] = useState(false);
       
         }
 
-         {!showList &&
-        <button className="listbtn submitbutton" onClick={handleListToggle}>
-         Daily Expenditure List
-        </button>
-        }
   
 
         {!showList && (
@@ -407,9 +359,14 @@ const [isOpen, setIsOpen] = useState(false);
                   />
                 </div>
               </div>
-              <button className="submitbutton submit_margin_btm" type="submit">
+              <div className="btn_space">
+              <button className="submitBtn submit_margin_btm" type="submit">
                 Submit
               </button>
+              <button className="bck_btn submit_margin_btm" onClick={handleListToggle}>
+                Back
+              </button>
+              </div>
             </form>
           </div>
         )}

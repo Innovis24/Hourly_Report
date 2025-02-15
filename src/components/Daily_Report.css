@@ -78,34 +78,8 @@
     flex-direction: column;
     gap: 16px; /* Spacing between fields in the same row */
   }  
-  .submitbutton{
-    background-color: #1995AD;
-    color: white;
-    width: auto;
-    height: 30px;
-    border-radius: 12px;
-    border: none;
-    font-size: 15px;
-    margin-top: 2%;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  .submit_margin_btm{
-    margin-bottom: 14px;
-  }
-.submitbutton:hover, .listbtn:hover {
-  background-color: #126e8c;
-}
  
-  .listbtn{
-        display: flex;
-        margin-left: auto;
-        font-size: 14px;
-        margin-top: 10px;
-        margin-right: 25px;
-        padding: 5px;
-        border: none !important;
-  }
+
   table {
     width: 100%;
     font-size: 14px;
@@ -394,56 +368,6 @@ tbody tr:hover {
   right: 12px;
 }
 
-.icon_button {
-  background-color: #ffffff;
-  border: 2px solid #1995AD;
-  color: #1995AD; 
-  cursor: pointer;
-  outline: none;
-  padding: 11px 14px 11px 14px;
-  border-radius: 50%; 
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.icon_button:hover {
-  background-color: #ffffff; 
-  color: #1995AD; 
-  border-color: #1995AD; 
-  transform: scale(1.1); 
-  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); 
-}
-
-.icon_button:active {
-  transform: scale(0.95); 
-  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2);
-}
-.menu_card {
-  position: absolute;
-  top: 60px; /* Adjust to position below the user icon */
-  right: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  padding: 16px;
-  width: 170px;
-  z-index: 10;
-}
-.userName{
-  padding:7px;
-  white-space: normal;
-  word-wrap: break-word;
-  word-break: break-word;
-  display: flex;
-}
-.userName:hover{
-  background-color: #f1f1f1;
-  padding:7px;
-}
-.mrg_rgt{
-  margin-right: 12px;
-}
 .color_logout{
   color: #1995AD;
   font-size: 20px;
@@ -454,20 +378,6 @@ tbody tr:hover {
 }
 .card-contents {
   margin-top: 16px;
-}
-.logout_alignment{
-  border: none;
-  background: none;
-  margin-left: 4px;
-  font-size: 18px;
-  
-}
-.logout_btn{
-  padding:7px;
-}
-.logout_btn:hover{
-  background-color: #f1f1f1;
-  padding:7px;
 }
 .mrg_lft_card{
   margin-left: -40%;
@@ -499,13 +409,26 @@ tbody tr:hover {
   flex-direction: row;
     margin-top: 21px;
 }
-.back_btn_DR {
+
+.DR_back_btn{
+  display: flex;
+  margin-left: auto;
+  font-size: 14px;
+  margin-top: 10px;
+  margin-right: 25px;
+  padding: 5px;
+  border: none !important;
   padding: 9px 24px 9px 24px;
-  margin-top: 4px;
+  margin-top: 10px;
   background-color: #1995AD;
   color: white;
   width: auto;
   border-radius: 24px;
   border: none;
   font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.DR_back_btn:hover{
+  background-color: #126e8c;
 }

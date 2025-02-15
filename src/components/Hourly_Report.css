@@ -43,35 +43,11 @@
     flex-direction: column;
     gap: 16px; /* Spacing between fields in the same row */
   }  
-  .submitbutton{
-    background-color: #1995AD;
-    color: white;
-    width: auto;
-    height: 30px;
-    border-radius: 12px;
-    border: none;
-    font-size: 15px;
-    margin-top: 2%;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-.submitbutton:hover, .listbtn:hover {
-  background-color: #126e8c;
-}
   .marginleft{
     /* margin-left: 22%; */
     /* margin-left: 14%; */
   }
-  .listbtn{
-        display: flex;
-        margin-left: auto;
-        font-size: 14px;
-        margin-top: 10px;
-        margin-right: 25px;
-        padding: 5px;
-        border: none !important;
-  }
+ 
   table {
     width: 100%;
     font-size: 14px;
@@ -163,6 +139,7 @@ tbody tr:hover {
     width: 30%;
     margin: auto;
     border-radius: 12%;
+    margin-top: 4%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   text-align: center;
   }
@@ -294,30 +271,6 @@ select:focus {
   right: 12px;
 }
 
-.icon_button {
-  background-color: #ffffff;
-  border: 2px solid #1995AD; 
-  color: #1995AD; 
-  cursor: pointer;
-  outline: none;
-  padding: 10px;
-  border-radius: 50%; 
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
-}
-
-.icon_button:hover {
-  background-color: #ffffff; 
-  color: #1995AD;
-  border-color: #1995AD;
-  transform: scale(1.1); 
-  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); 
-}
-
-.icon_button:active {
-  transform: scale(0.95); 
-  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2);
-}
 
 .filter-bar {
   display: flex;
@@ -427,12 +380,9 @@ select:focus {
     width: auto; 
   }
 
-  .listbtn.submitbutton {
-    width: 100%; 
-  }
 }
 
-.back_btn{
+.submitBtn{
   padding: 9px 24px 9px 24px;
   margin-top: 10px;
   background-color: #1995AD;
@@ -444,7 +394,7 @@ select:focus {
   cursor: pointer;
     transition: background-color 0.3s ease;
 }
-.back_btn:hover{
+.submitBtn:hover{
   background-color: #126e8c;
 }
 .branch_style{

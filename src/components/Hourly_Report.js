@@ -9,9 +9,9 @@ import { format } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import {  FaEdit, FaTrashAlt } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOut, faUser ,faCircleXmark  } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from "react-router-dom"; 
-import Popup from 'reactjs-popup';
+import { faCircleXmark  } from '@fortawesome/free-solid-svg-icons';
+import Home from "./Home"
+
 
 const apiUrl = "http://localhost/hourly_report/hourly_api.php";
 const user_api = "http://localhost/hourly_report/User_Master.php";
@@ -36,7 +36,6 @@ function HourlyReport() {
  const [currentuser, setcurrentuser] = useState();
    const [recentuser, setrecentuser] = useState();
    const [curretnBranchname, setcurretnBranchname] = useState();
-   const [openpopup, setopenpopup] = useState();
   const [Array, setArray] = useState([
     {
       ID: "",
@@ -49,9 +48,7 @@ function HourlyReport() {
       cashin_hand: "",
     },
   ]);
-  const [isOpen, setIsOpen] = useState(false);
-  const closeModal = () => setIsOpen(false);
-  const navigate = useNavigate(); // For go to login page the navigate function
+  
 
   useEffect(() => {
     // Update filtered data state
@@ -69,15 +66,6 @@ function HourlyReport() {
     getBranchName();
    
   }, []);
-
-
-  // useEffect(() => {
-  //   // Update filtered data state
-  //   setTimeout(() => {
-
-  // }, 500);
-   
-//  }, [startDate, Array]);
 
   const Time = [
     { value: "24", text: "" },
@@ -147,13 +135,7 @@ function HourlyReport() {
     setselectBranchname("")
     getapi('','')
   }
-  const OpenUser=()=>{
-    setopenpopup(!openpopup);
-  }
-  const OpenPopupcard = () => {
-    setIsOpen(true)
-  }
- 
+
   const usedTimes = filteredData.map((item) => item.endtime);
 
   // Filter out used times from the Time array
@@ -276,6 +258,9 @@ function HourlyReport() {
           .post(apiUrl, processedData)
           .then((response) => {
             // alert(response.data.message);
+            toast.success("Entry added successfully!");
+            // setShowlist(true);
+          // setSubmitButton(true);
             getapi(curretnBranchname,'');
           })
           .catch((error) => console.error("Error adding user:", error));
@@ -335,7 +320,9 @@ function HourlyReport() {
         axios
         .put(apiUrl, processedData)
         .then((response) => {
-          console.log(response.data.message);
+          toast.success("Entry update successfully!");
+          setShowlist(true);
+          setSubmitButton(true);
           getapi(curretnBranchname,'');  // Optional: refresh the data
         })
         .catch((error) => console.error("Error updating data:", error));        
@@ -391,9 +378,10 @@ function HourlyReport() {
     setPettyCash("");
     setAmountTaken("");
     setstartTime("24");
+    setSubmitButton(true)
     setShowlist(true); //open list form
   };
-  const backlistitem = (event) => {
+  const listformShow = (event) => {
     
     setShowlist(false); //open list form
     
@@ -409,81 +397,25 @@ function HourlyReport() {
   const notify = () => toast.error("Please fill all details");
 
 
-  const handleExit = () => {
-    // Redirect to the login page
-    localStorage.clear();
-      navigate("/")
-   
-  };
 
   return (
     <div>
       <ToastContainer />
-      <Popup open={isOpen} onClose={closeModal} contentStyle={{
-      width: '385px', 
-      padding: '20px', 
-      border: '1px solid #ccc',
-      borderRadius: '8px',
-       background: 'white'
-    }}>
-      <div >
-        <h2 className="fontFam">Are you sure you want to logout?</h2>
-        <div className="popup_btn">
-          <button className="btn_yesclr" onClick={handleExit}>Yes</button>
-          <button className="btn_noClr" onClick={closeModal}>No</button>
-        </div>
-
-      </div>
-    </Popup>
-       {openpopup && (
-          <div className="menu_card ">
-             <div className="userName ">
-              <FontAwesomeIcon icon={faUser} className="color_logout mrg_rgt"/>
-              <div className="cls_imagecolor">{currentuser}</div>
-             </div>
-           
-             <div className="logout_btn cursor_logout" onClick={OpenPopupcard}>
-                    <FontAwesomeIcon icon={faSignOut} className="mrg_lft_card color_logout"/>
-                    <button className="logout_alignment" >
-                      Logout
-                    </button>
-                  </div>
-          </div>
-        )}
       <div className="App">
-        <div className="header_font"><b>HOURLY REPORT</b>  <div className="header_buttons">
-        <button className="icon_button user_border_radius" type="submit"   title={currentuser} onClick={OpenUser}>
-              {/* <FaUser size={20} /> */}
-              {recentuser}
-            </button>
-    {/* <button
-              className="icon_button"
-              title="Logout"
-              onClick={handleExit} // Add click handler
-            >
-      <FaSignOutAlt size={20} />
-    </button> */}
-  </div></div>
-  { curretnBranchname && 
+ 
+       
+       <Home  title="Hourly Report"  />
+       { curretnBranchname && 
         <div  className="branchname">
           <div className="branchName_style">
             {curretnBranchname}
           </div>
         </div> }
-        {/* report list button */}
-        {Showlist === false && (
-          <button className="listbtn submitbutton" onClick={showlistitem}>
-            Hourly report list
-          </button>
-        )}
-
+       
         {/* create form start */}
         {Showlist === false && (
           <div className="card_design">
             <form >
-            {/* <div className="cancel_bnt_card">
-              <FontAwesomeIcon  icon={faCircleXmark} />
-              </div> */}
             
               <div className="body_padding">
              
@@ -538,25 +470,23 @@ function HourlyReport() {
               </div>
               {Showlist === false && (
                 <div>
-                  <button type="submit" className="submitbutton submit_margin_btm upd_btn" onClick={handleSubmit}>
+                  <button type="submit" className="submitBtn submit_margin_btm upd_btn" onClick={handleSubmit}>
                     {showsubmit === false ? "Update" : "Submit"}
                   </button>
                   <button type="button"  className="bck_btn submit_margin_btm"  onClick={showlistitem}>
                    Back
                   </button>
                 </div>
-         
-          
         )}
             </form>
                {/* form end */}
         
           </div>
         )}
-
+       
      
       </div>
-
+     
       {Showlist === true && (
         <div className={currentRole ==='Admin' ? "form-container mrg_tp20" : "form-container"}>
           {/* // <div className="form-container"> */}
@@ -598,14 +528,15 @@ function HourlyReport() {
             />
           </div>
           { currentRole !== "Admin" && 
-          <button className="back_btn"  onClick={backlistitem}>
-            Back
+          <button className="submitBtn"  onClick={listformShow}>
+            Add Report
           </button>
             }
+      
         </div>
 
       )}
-
+   
       {/* lisst screen start */}
 
       {Showlist === true && (

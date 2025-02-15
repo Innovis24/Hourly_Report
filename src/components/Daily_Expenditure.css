@@ -38,74 +38,11 @@
     flex-direction: column;
     gap: 16px; /* Spacing between fields in the same row */
   }  
-  .submitbutton {
-    background-color: #1995AD; /* Primary button color */
-    color: white; /* Button text color */
-    width: auto;
-    height: 40px; /* Slightly taller button for better visibility */
-    padding: 0 20px; /* Add horizontal padding for a balanced look */
-    border-radius: 20px; /* Smooth, pill-shaped corners */
-    border: none;
-    font-size: 16px; /* Slightly larger font size */
-    font-family: 'Poppins', sans-serif; /* Modern, clean font */
-    font-weight: 500; /* Slightly bold text */
-    letter-spacing: 0.5px; /* Add slight spacing for elegance */
-    margin-top: 2%;
-    cursor: pointer;
-    transition: all 0.3s ease; /* Smooth transitions for multiple properties */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  }
-  
-  .submitbutton:hover {
-    background-color: #126e8c; /* Darker color on hover */
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Deeper shadow for hover effect */
-    transform: translateY(-2px); /* Lift button slightly on hover */
-  }
-  
-  .submitbutton:active {
-    background-color: #0e4c63; /* Even darker color on click */
-    transform: translateY(0); /* Remove lift effect */
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2); /* Reduced shadow */
-  }
-  
+ 
   .submit_margin_btm {
     margin-bottom: 14px;
   }
-  
-  .listbtn {
-    background-color: #126e8c; /* Secondary button color */
-    color: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: none;
-    font-size: 16px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .listbtn:hover {
-    background-color: #1995AD; /* Lighten color on hover */
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Hover shadow effect */
-    transform: translateY(-2px);
-  }
-  
-  .listbtn:active {
-    background-color: #0e4c63; /* Active state color */
-    transform: translateY(0);
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-  }
-  
-.listbtn{
-        display: flex;
-        margin-left: auto;
-        font-size: 14px;
-        margin-top: 10px;
-        margin-right: 25px;
-        padding: 5px;
-        border: none !important;
-  }
+
 table {
     width: 80%;
     font-size: 14px;
@@ -203,6 +140,7 @@ tbody tr:hover {
     width: 58%;
     margin: auto;
     border-radius: 12%;
+    margin-top: 4%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   text-align: center;
   }
@@ -435,43 +373,7 @@ tbody tr:hover {
   border-radius: 5px; 
   margin-bottom: 10px; 
 }
-
-.listbtn.submitbutton {
-  display: flex; /* Use flexbox for centering */
-  align-items: center; /* Center content vertically */
-  justify-content: center; /* Center content horizontally */
-  background-color: #1995AD; /* Primary button color */
-  color: white; /* Text color */
-  height: 45px; /* Slightly taller for a prominent look */
-  padding: 0 25px; /* Adequate horizontal padding for longer text */
-  border-radius: 25px; /* Smooth pill-shaped corners */
-  border: none; /* No border for clean look */
-  font-size: 16px; /* Modern font size */
-  font-family: 'Poppins', sans-serif; /* Consistent font choice */
-  font-weight: 500; /* Medium font weight for readability */
-  letter-spacing: 0.5px; /* Slight letter spacing for elegance */
-  cursor: pointer; /* Pointer cursor for interactivity */
-  transition: all 0.3s ease; /* Smooth transitions */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-}
-
-.listbtn.submitbutton:hover {
-  background-color: #126e8c; /* Darker color for hover effect */
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Enhance shadow on hover */
-  transform: translateY(-2px); /* Slight lift on hover */
-}
-
-.listbtn.submitbutton:active {
-  background-color: #0e4c63; /* Darkest shade for active state */
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
-  transform: translateY(0); /* No lift when clicked */
-}
-
-.listbtn.submitbutton:focus {
-  outline: none; /* Remove default focus outline */
-  box-shadow: 0 0 5px #1995AD; /* Subtle glow for focus state */
-}
-/* for the input box*/
+for the input box*/
 
 .input_position{
   z-index: -1;
@@ -503,30 +405,6 @@ tbody tr:hover {
   right: 12px;
 }
 
-.icon_button {
-  background-color: #ffffff;
-  border: 2px solid #1995AD; /* Add a border color */
-  color: #1995AD; /* Icon color */
-  cursor: pointer;
-  outline: none;
-  padding: 11px 14px 11px 14px;
-  border-radius: 50%; /* Circular button */
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-}
-
-.icon_button:hover {
-  background-color: #ffffff; /* Change background on hover */
-  color: #1995AD; /* Icon color on hover */
-  border-color: #1995AD; /* Darker border on hover */
-  transform: scale(1.1); /* Slight zoom effect */
-  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
-}
-
-.icon_button:active {
-  transform: scale(0.95); /* Button press effect */
-  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2);
-}
 .scrollit_de
 {
   margin:20px;
@@ -535,4 +413,9 @@ tbody tr:hover {
   overflow-y: scroll;
   height: 345px;
       scrollbar-width: thin;
+}
+.btn_space{
+  display: flex;
+  justify-content: space-between;
+  
 }

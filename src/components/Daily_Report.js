@@ -10,8 +10,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOut, faUser ,faCircleXmark } from '@fortawesome/free-solid-svg-icons';
-import Popup from 'reactjs-popup';
-import { useNavigate } from "react-router-dom"; 
+import Home from './Home'
+
 
 const apiUrl = "http://localhost/hourly_report/Daily_Report_api.php";
 const user_api = "http://localhost/hourly_report/User_Master.php";
@@ -33,7 +33,6 @@ function DailyReport() {
   const [showList, setShowList] = useState(true);
   const [showsubmit, setSubmitButton] = useState(true);
   const formattedDate = format(startDate, "yyyy-MM-dd");
-  const [openpopup, setopenpopup] = useState();
    const [currentRole, setcurrentRole] = useState();
   const [currentuser, setcurrentuser] = useState();
     const [branchNamelist, setbranchNamelist] = useState("");
@@ -56,10 +55,7 @@ function DailyReport() {
       TotalCashinTaken: "",
     },
   ]);
- const [isOpen, setIsOpen] = useState(false);
    const [curretnBranchname, setcurretnBranchname] = useState();
-  const closeModal = () => setIsOpen(false);
-  const navigate = useNavigate(); // For go to login page the navigate function
 
   //useeffect - render every page refresh (1st render this function)
   useEffect(() => {
@@ -521,64 +517,14 @@ function DailyReport() {
       setGPayHolder()
       setPettyCash()
   };
-  const handleExit = () => {
-    localStorage.clear();
-    navigate("/")
-  };
-  const OpenUser=()=>{
-    setopenpopup(!openpopup);
-  }
-  const OpenPopupcard = () => {
-    setIsOpen(true)
-  }
+ 
   return (
     <div>
       <ToastContainer />
-        <Popup open={isOpen} onClose={closeModal} contentStyle={{
-            width: '385px', 
-            padding: '20px', 
-            border: '1px solid #ccc',
-            borderRadius: '8px',
-             background: 'white'
-          }}>
-            <div >
-              <h2 className="fontFam">Are you sure you want to logout?</h2>
-              <div className="popup_btn">
-                <button className="btn_yesclr" onClick={handleExit}>Yes</button>
-                <button className="btn_noClr" onClick={closeModal}>No</button>
-              </div>
-      
-            </div>
-          </Popup>
-          {openpopup && (
-          <div className="menu_card ">
-             <div className="userName ">
-              <FontAwesomeIcon icon={faUser} className="color_logout mrg_rgt"/>
-              <div className="cls_imagecolor">{currentuser}</div>
-             </div>
-           
-             <div className="logout_btn cursor_logout" onClick={OpenPopupcard}>
-                    <FontAwesomeIcon icon={faSignOut} className="mrg_lft_card color_logout"/>
-                    <button className="logout_alignment" >
-                      Logout
-                    </button>
-                  </div>
-          </div>
-        )}
+     
       <div className="App2">
-        <div className="header_font2"><b>DAILY REPORT</b><div className="header_buttons">
-            <button className="icon_button user_border_radius" type="submit"   title={currentuser} onClick={OpenUser}>
-              {/* <FaUser size={20} /> */}
-              {recentuser}
-            </button>
-            {/* <button
-              className="icon_button"
-              title="Logout" type="submit" 
-              onClick={handleExit} // Add click handler
-            >
-              <FaSignOutAlt size={20} />
-            </button> */}
-          </div></div>
+       
+      <Home  title="Daily Report"  />
      
         { curretnBranchname && 
         <div  className="branchname">
@@ -587,11 +533,11 @@ function DailyReport() {
           </div>
         </div> }
         {showList === false && (
-          <button className="listbtn submitbutton" onClick={showlistitem}>
-            DailyReport List
+          <button className="DR_back_btn" onClick={showlistitem}>
+           Back
           </button>
         )}
-
+       
         {showList === false && (
           <div className="card_design2 card_style_dailyReport">
             <form onSubmit={handleSubmit}>
@@ -671,7 +617,7 @@ function DailyReport() {
                 </div>
               </div>
               {showList === false && (
-                <button type="submit" className="submitbutton submit_margin_btm">
+                <button type="submit" className="submitBtn submit_margin_btm">
                   {showsubmit === false ? "Update" : "Submit"}
                 </button>
               )}
@@ -727,8 +673,8 @@ function DailyReport() {
                       </div>
                   </div>
                   { currentRole !== "Admin" && 
-                  <button className="back_btn_DR" onClick={showback}>
-                    Back
+                  <button className="submitBtn" onClick={showback}>
+                    Add Report
                   </button>
                     }
                 </div>

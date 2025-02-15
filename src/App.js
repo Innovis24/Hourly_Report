@@ -12,20 +12,6 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <MainContent />
-      </Router>
-    </div>
-  );
-}
-
-function MainContent() {
-  const location = useLocation();
-  const isLoginPage = location.pathname === "/";
-
-  return (
-    <>
-      {/* Show Home (Sidebar) only if not on the Login page */}
-      {!isLoginPage && <Home />}
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/home" element={<Home />} />
@@ -35,9 +21,12 @@ function MainContent() {
         {/* <Route path="/forget_password" element={<ForgetPassword />} /> */}
         <Route path="/daily_expenditure" element={<DailyExpenditure />} />
       </Routes>
-    </>
+      </Router>
+    </div>
   );
 }
+
+
 
 
 export default App;
