@@ -522,7 +522,7 @@ function DailyReport() {
     <div>
       <ToastContainer />
      
-      <div className="App2">
+      <div className="scroll-container">
        
       <Home  title="Daily Report"  />
      

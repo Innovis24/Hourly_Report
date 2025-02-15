@@ -15,8 +15,11 @@
     padding: 25px 25px 25px 25px; 
     font-family: 'Courier New', Courier, monospace;
 }
-
-
+ .scroll-container {
+    height: 94vh;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+  }
 /* input tsype */
 
 .form-group {
@@ -467,4 +470,17 @@ select:focus {
     color: white;
     margin-top: 12px;
     border-radius: 16px;
+}
+@media (max-width: 768px) { /* Adjust the width as needed */
+  .scroll-container {
+    height: 94vh;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+  }
+}
+
+@media (min-width: 769px) {
+  .scroll-container {
+    overflow-y: hidden; /* Hide scrollbar on larger screens */
+  }
 }

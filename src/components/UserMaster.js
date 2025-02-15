@@ -42,7 +42,7 @@ function UserMaster() {
     return (
         <div>
 
-            <div className="App">
+<div className="scroll-container">
                <Home  title="User Master"  />
                 <div className="App scrollit_UM table_scroll">
 

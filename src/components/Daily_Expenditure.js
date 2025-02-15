@@ -250,7 +250,7 @@ const [isOpen, setIsOpen] = useState(false);
   return (
     <div>
       <ToastContainer />
-      <div className="App">
+      <div className="scroll-container">
       <Home  title="Daily Expenditure"  />
                  
                   { curretnBranchname && 

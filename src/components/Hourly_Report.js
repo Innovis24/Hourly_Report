@@ -401,7 +401,7 @@ function HourlyReport() {
   return (
     <div>
       <ToastContainer />
-      <div className="App">
+      <div className="scroll-container">
  
        
        <Home  title="Hourly Report"  />
@@ -485,7 +485,7 @@ function HourlyReport() {
         )}
        
      
-      </div>
+      
      
       {Showlist === true && (
         <div className={currentRole ==='Admin' ? "form-container mrg_tp20" : "form-container"}>
@@ -621,6 +621,7 @@ function HourlyReport() {
           </div>
         </form>
       )}
+    </div>
     </div>
   );
 }
