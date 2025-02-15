@@ -23,7 +23,7 @@ function UserMaster() {
     useEffect(() => {
         getapi()
         const value =  JSON.parse(localStorage.getItem('currentUsername'));
-        const usernameVal = value[0].UserName
+        const usernameVal = value[0].Name
         setcurrentuser(usernameVal)
         const nameParts = usernameVal.charAt(0);
 
@@ -113,7 +113,7 @@ function UserMaster() {
                   <th>User name</th>
                   <th>User Role</th>
                   <th>Branch name</th>
-                  <th>Action</th>
+                  {/* <th>Action</th> */}
                 </tr>
                 {/* <tr></tr> */}
               </thead>
@@ -126,7 +126,7 @@ function UserMaster() {
                       <td>{item.UserRole}</td>
                       <td>{item.BranchName ? item.BranchName : '-'}</td>
 
-                      <td>
+                      {/* <td> */}
 
                         {/* <FaEdit
                           className="iconPaddig"
@@ -136,7 +136,7 @@ function UserMaster() {
                           className="iconPaddig"
                           onClick={(e) => handleDelete(e, item)}
                         /> */}
-                      </td>
+                      {/* </td> */}
                     </tr>
 
 

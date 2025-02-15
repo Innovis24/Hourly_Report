@@ -419,7 +419,7 @@ const [isOpen, setIsOpen] = useState(false);
            <center><div className="card3">
            <div className="cashtaken">Total Expenditure</div>
            <div className="total">₹ {totalAmount.toFixed(2)} </div>{/* Format to 2 decimal places */}
-</div></center>
+              </div></center>
 
             <center>         
                <div className="table_align3  scrollit_de table_scroll">

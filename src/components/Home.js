@@ -13,6 +13,9 @@ function Home() {
   useEffect(() => {
    
     const value =  JSON.parse(localStorage.getItem('currentUsername'));
+    if(!value){
+      return
+    }
     const usernameVal = value[0].UserRole
     setcurrentUserRole(usernameVal)
 
