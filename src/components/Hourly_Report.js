@@ -411,6 +411,13 @@ function HourlyReport() {
             {curretnBranchname}
           </div>
         </div> }
+        {Showlist === false && (
+        <div className="dipaly_flex_back">
+        <button type="button"  className="submitBtn submit_margin_btm"  onClick={showlistitem}>
+                   Back
+                  </button>
+        </div>
+        )}
        
         {/* create form start */}
         {Showlist === false && (
@@ -473,9 +480,7 @@ function HourlyReport() {
                   <button type="submit" className="submitBtn submit_margin_btm upd_btn" onClick={handleSubmit}>
                     {showsubmit === false ? "Update" : "Submit"}
                   </button>
-                  <button type="button"  className="bck_btn submit_margin_btm"  onClick={showlistitem}>
-                   Back
-                  </button>
+                  
                 </div>
         )}
             </form>

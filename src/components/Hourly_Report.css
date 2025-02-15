@@ -142,7 +142,6 @@ tbody tr:hover {
     width: 30%;
     margin: auto;
     border-radius: 12%;
-    margin-top: 4%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   text-align: center;
   }
@@ -483,4 +482,10 @@ select:focus {
   .scroll-container {
     overflow-y: hidden; /* Hide scrollbar on larger screens */
   }
+}
+.dipaly_flex_back{
+    display: flex;
+    justify-content: end;
+    margin-right: 1%;
+
 }

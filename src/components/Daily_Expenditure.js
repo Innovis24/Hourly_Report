@@ -8,7 +8,6 @@ import { FaTrashAlt } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOut, faUser,faCircleXmark  } from '@fortawesome/free-solid-svg-icons';
 import Home from './Home'
@@ -29,19 +28,11 @@ function DailyExpenditure() {
   const [totalAmount, setTotalAmount] = useState(0);
   const [currentuser, setcurrentuser] = useState();
   const [currentRole, setcurrentRole] = useState();
-  const [openpopup, setopenpopup] = useState();
   const [curretnBranchname, setcurretnBranchname] = useState();
   const [selectBranchname, setselectBranchname] = useState("");
   const [recentuser, setrecentuser] = useState();
   const [branchNamelist, setbranchNamelist] = useState("");
- 
-const [isOpen, setIsOpen] = useState(false);
-  const closeModal = () => setIsOpen(false);
-    const navigate = useNavigate(); // For go to login page the navigate function
-    const OpenUser=()=>{
-      setopenpopup(!openpopup);
-    }
-  
+
   useEffect(() => {
     getBranchName();
     const value =  JSON.parse(localStorage.getItem('currentUsername'));
@@ -240,13 +231,7 @@ const [isOpen, setIsOpen] = useState(false);
     setShowList(!showList);
   };    
 
-  const handleExit = () => {
-    localStorage.clear();
-    navigate("/")
-  };
-  const OpenPopupcard = () => {
-    setIsOpen(true)
-  }
+ 
   return (
     <div>
       <ToastContainer />
@@ -254,11 +239,20 @@ const [isOpen, setIsOpen] = useState(false);
       <Home  title="Daily Expenditure"  />
                  
                   { curretnBranchname && 
-        <div  className="branchname">
-          <div className="branchName_style">
-            {curretnBranchname}
-          </div>
-        </div> }
+                  <div  className="branchname">
+                    <div className="branchName_style">
+                      {curretnBranchname}
+                    </div>
+                  </div> 
+                  }
+
+        {showList === false && (
+                <div className="dipaly_flex_back">
+                   <button className="submitBtn submit_margin_btm" onClick={handleListToggle}>
+                Back
+              </button>
+                </div>
+                )}
 
         {showList && (
         <div className={currentRole ==='Admin' ? "form-container mrg_tp20" : "form-container"}>
@@ -359,13 +353,11 @@ const [isOpen, setIsOpen] = useState(false);
                   />
                 </div>
               </div>
-              <div className="btn_space">
+              <div >
               <button className="submitBtn submit_margin_btm" type="submit">
                 Submit
               </button>
-              <button className="bck_btn submit_margin_btm" onClick={handleListToggle}>
-                Back
-              </button>
+             
               </div>
             </form>
           </div>

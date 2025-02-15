@@ -414,8 +414,3 @@ for the input box*/
   height: 345px;
       scrollbar-width: thin;
 }
-.btn_space{
-  display: flex;
-  justify-content: space-between;
-  
-}
