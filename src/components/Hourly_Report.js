@@ -18,6 +18,7 @@ const user_api = "http://localhost/hourly_report/User_Master.php";
 
 function HourlyReport() {
   const [startDate, setStartDate] = useState(new Date());
+  const [selectDateDD,setselectDateDD] = useState(new Date())
   const [startTime, setstartTime] = useState("24");
   const [startTimeText, setstartTimeText] = useState("");
   const [Pettycash, setPettyCash] = useState("");
@@ -31,6 +32,7 @@ function HourlyReport() {
   const formattedDate = format(startDate, "yyyy-MM-dd");
   const getIDFormat = format(startDate, "yyyyMMdd");
   const [filteredData, setFilteredData] = useState([]);
+  const [todayFilterData, settodayFilterData] = useState([]);
   const [branchNamelist, setbranchNamelist] = useState("");
   const [selectBranchname, setselectBranchname] = useState("");
  const [currentuser, setcurrentuser] = useState();
@@ -62,9 +64,9 @@ function HourlyReport() {
     setrecentuser(nameParts);
     setcurretnBranchname(value[0].BranchName)
    
-    getapi(value[0].BranchName,'');
+    getapi(value[0].BranchName);
     getBranchName();
-   
+    gettodayApi(value[0].BranchName)
   }, []);
 
   const Time = [
@@ -97,9 +99,9 @@ function HourlyReport() {
 
   const handleBranchChange = (e) => {
     setselectBranchname(e.target.value);
-    getapi(e.target.value,'')
+    handleselectDateval(e.target.value,selectDateDD)
   };
-  const getapi = (Branch,date) => {
+  const getapi = (Branch) => {
     axios
       .get(apiUrl)
       .then((response) => {
@@ -107,21 +109,59 @@ function HourlyReport() {
           const filterbranch = response.data.filter((item)=>item.BranchName === Branch)
 
           setArray(filterbranch);
-          const startDateval = date === '' ? startDate : date;
-          const formattedDate = format(startDateval, "yyyy-MM-dd"); // Format the selected date
-          const filtered = filterbranch.filter((item) => item.Date === formattedDate); // Filter by date
-          setFilteredData(filtered);
+          setFilteredData(filterbranch)
         }
         else{
           setArray(response.data);
-          const startDateval = date === '' ? startDate : date;
-          const formattedDate = format(startDateval, "yyyy-MM-dd"); // Format the selected date
-          const filtered = response.data.filter((item) => item.Date === formattedDate); // Filter by date
-          setFilteredData(filtered);
+          setFilteredData(response.data)
         }
       })
       .catch((error) => console.error("Error fetching users:", error));
   };
+
+  const handleselectDateval = (branch,dateval) => {
+    axios
+    .get(apiUrl + '?action=getReports') // in this place use two api so mention it(action).
+    .then((response) => {
+      if(branch && !dateval){
+        const filterbranch = response.data.filter((item)=>item.BranchName === branch)
+        setFilteredData(filterbranch); 
+       }
+       else if(!branch && dateval){
+        if(curretnBranchname){
+          const filterbranch = response.data.filter((item)=>item.BranchName === curretnBranchname)
+          const formattedDate = format(dateval, "yyyy-MM-dd"); // Format the selected date
+          const filteredate = filterbranch.filter((item) => item.Date === formattedDate); // Filter by date
+          setFilteredData(filteredate); 
+          return
+        }
+        const formattedDate = format(dateval, "yyyy-MM-dd"); // Format the selected date
+        const filteredate = response.data.filter((item) => item.Date === formattedDate); // Filter by date
+        setFilteredData(filteredate); 
+       }
+       else if(!branch && !dateval){
+        if(curretnBranchname){
+          const filterbranch = response.data.filter((item)=>item.BranchName === curretnBranchname)
+          setFilteredData(filterbranch); 
+        return
+        }
+        setFilteredData(response.data); 
+       }
+       else{
+        const filterbranch = response.data.filter((item)=>item.BranchName === branch)
+        const formattedDate = format(dateval, "yyyy-MM-dd"); // Format the selected date
+        const filteredate = filterbranch.filter((item) => item.Date === formattedDate); // Filter by date
+        setFilteredData(filteredate); 
+       
+       }
+     
+    })
+    .catch((error) => {
+      console.error("Error fetching daily reports:", error);
+      toast.error("Error fetching daily reports");
+    });
+  }
+
 
   const getBranchName = () => {
     axios
@@ -131,38 +171,60 @@ function HourlyReport() {
       })
       .catch((error) => console.error("Error fetching users:", error));
   };
-  const clearDate=()=>{
-    setselectBranchname("")
-    getapi('','')
+  const clearBranch=()=>{
+    setselectBranchname("");
+    handleselectDateval('',selectDateDD)
   }
 
-  const usedTimes = filteredData.map((item) => item.endtime);
+  const clearDate = () =>{
+    setselectDateDD(null)
+    handleselectDateval(selectBranchname,'')  
+  }
+ 
+    const gettodayApi=(valuebn)=>{
+      // settodayFilterData
+      axios
+      .get(apiUrl)
+      .then((response) => {
+      
+          const filterbranch = response.data.filter((item)=>item.BranchName === valuebn)
 
-  // Filter out used times from the Time array
-  const filteredTime = Time.filter(
-    (option) => !usedTimes.includes(option.text)
-  );
+          const formattedDate = format(new Date(), "yyyy-MM-dd"); // Format the selected date
+          const filtered = filterbranch.filter((item) => item.Date === formattedDate); // Filter by date
+          settodayFilterData(filtered)
+        
+      })
+      .catch((error) => console.error("Error fetching users:", error));
+    } 
 
-  let tempTime = []
-  let SortedTime = []
-   if(showsubmit === false){
-    
-    const updatedTime = Time.filter((item)=>item.text === startTimeText)
-    tempTime = [...filteredTime,...updatedTime]
-    SortedTime = tempTime.sort((a, b) => {
-      const timeA = a.value;
-      const timeB = b.value;
-      return timeA - timeB;
-    });
-
-   }
+   
+    const usedTimes = todayFilterData.map((item) => item.endtime);
   
-
-  const options = showsubmit === false ? SortedTime.map((option) => {
-    return <option value={option.value}>{option.text}</option>;
-  }) : filteredTime.map((option) => {
-    return <option value={option.value}>{option.text}</option>;
-  });
+    // Filter out used times from the Time array
+    const filteredTime = Time.filter(
+      (option) => !usedTimes.includes(option.text)
+    );
+  
+    let tempTime = []
+    let SortedTime = []
+     if(showsubmit === false){
+      
+      const updatedTime = Time.filter((item)=>item.text === startTimeText)
+      tempTime = [...filteredTime,...updatedTime]
+      SortedTime = tempTime.sort((a, b) => {
+        const timeA = a.value;
+        const timeB = b.value;
+        return timeA - timeB;
+      });
+  
+     }
+    
+  
+    const options = showsubmit === false ? SortedTime.map((option) => {
+      return <option value={option.value}>{option.text}</option>;
+    }) : filteredTime.map((option) => {
+      return <option value={option.value}>{option.text}</option>;
+    });
  
   const handlesetstartTime = (event) => {
     const selectedIndex = event.target.selectedIndex;
@@ -261,7 +323,8 @@ function HourlyReport() {
             toast.success("Entry added successfully!");
             // setShowlist(true);
           // setSubmitButton(true);
-            getapi(curretnBranchname,'');
+            getapi(curretnBranchname);
+            gettodayApi(curretnBranchname);
           })
           .catch((error) => console.error("Error adding user:", error));
       } else {
@@ -323,7 +386,8 @@ function HourlyReport() {
           toast.success("Entry update successfully!");
           setShowlist(true);
           setSubmitButton(true);
-          getapi(curretnBranchname,'');  // Optional: refresh the data
+          gettodayApi(curretnBranchname);
+          getapi(curretnBranchname);  // Optional: refresh the data
         })
         .catch((error) => console.error("Error updating data:", error));        
 
@@ -351,7 +415,7 @@ function HourlyReport() {
       }
 
       // Fetch updated data after deletion
-      getapi(curretnBranchname,'');
+      getapi(curretnBranchname);
     } catch (error) {
       console.error("Error deleting record:", error);
     }
@@ -384,18 +448,22 @@ function HourlyReport() {
   const listformShow = (event) => {
     
     setShowlist(false); //open list form
-    
+    gettodayApi(curretnBranchname)
   };
 
   const handleSelectDate = (value)=>{
-    
-    setStartDate(value)
-    const val = curretnBranchname === "" ? selectBranchname : curretnBranchname;
-    getapi(val,value)
+
+    setselectDateDD(value)
+    handleselectDateval(selectBranchname,value)
   }
 
   const notify = () => toast.error("Please fill all details");
 
+  const handleSetTime = ()=>{
+    const nowDate = new Date()
+    setStartDate(nowDate)
+    
+  }
 
 
   return (
@@ -433,7 +501,8 @@ function HourlyReport() {
                     dateFormat="yyyy-MM-dd"
                     minDate={new Date()}
                     maxDate={new Date()}
-                    onChange={(date) => setStartDate(date)}
+                    onChange={handleSetTime}
+                    // onChange={(date) => setStartDate(date)}
                   />
                 </div>
                 <div className="row_align">
@@ -514,7 +583,7 @@ function HourlyReport() {
                 ))}
               </select>
               <FontAwesomeIcon icon={faCircleXmark}
-              onClick={clearDate}
+              onClick={clearBranch}
                className="icon_cl color_logout"/>
             </div>
            
@@ -523,14 +592,19 @@ function HourlyReport() {
           </div>
       }
           <div className="form-group">
-            <label className='head_style'>Select Date: </label>
+            <label className='head_style mrg_top10DH'>Select Date: </label>
+            <div className="fomr_row">
             <DatePicker
-              selected={startDate}
+              selected={selectDateDD}
               dateFormat="yyyy-MM-dd"
               className="mrg_top10 custom-datepicker"
               maxDate={new Date()}
               onChange={handleSelectDate}
             />
+             <FontAwesomeIcon icon={faCircleXmark}
+                                  onClick={clearDate}
+                                   className="icon_cl color_logout"/>
+              </div>
           </div>
           { currentRole !== "Admin" && 
           <button className="submitBtn"  onClick={listformShow}>
