@@ -37,8 +37,9 @@ function HourlyReport() {
   const [selectBranchname, setselectBranchname] = useState("");
  const [currentuser, setcurrentuser] = useState();
    const [recentuser, setrecentuser] = useState();
+   const [rowsPerPage, setrowsPerPage] = useState(5);
    const [curretnBranchname, setcurretnBranchname] = useState();
-  const [Array, setArray] = useState([
+  const [ArrayVal, setArray] = useState([
     {
       ID: "",
       id: "",
@@ -51,6 +52,14 @@ function HourlyReport() {
     },
   ]);
   
+  ///pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const currentRows = filteredData.slice(startIndex, endIndex);
+  const totalPages = filteredData.length > 0 ? Math.ceil(filteredData.length / rowsPerPage) : 0;
+
+
 
   useEffect(() => {
     // Update filtered data state
@@ -161,7 +170,12 @@ function HourlyReport() {
       toast.error("Error fetching daily reports");
     });
   }
-
+  const goToPage = (page,e) => {
+    e.preventDefault();
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   const getBranchName = () => {
     axios
@@ -451,12 +465,15 @@ function HourlyReport() {
     gettodayApi(curretnBranchname)
   };
 
-  const handleSelectDate = (value)=>{
+  const handleSelectDate = (date)=>{
 
-    setselectDateDD(value)
-    handleselectDateval(selectBranchname,value)
+    setselectDateDD(date)
+    handleselectDateval(selectBranchname,date)
   }
-
+  const handleRowsPerPageChange = (e) => {
+    setrowsPerPage(Number(e.target.value));
+    setCurrentPage(1); // Reset to first page when changing rows per page
+  };
   const notify = () => toast.error("Please fill all details");
 
   const handleSetTime = ()=>{
@@ -465,6 +482,38 @@ function HourlyReport() {
     
   }
 
+  const generatePagination = () => {
+    const pages = [];
+    const maxPagesToShow = 5; // Adjust how many pages are visible at once
+
+    if (totalPages <= maxPagesToShow) {
+      // Show all pages if totalPages is small
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1); // Always show first page
+
+      if (currentPage > 3) {
+        pages.push("..."); // Ellipsis before the middle pages
+      }
+
+      let start = Math.max(2, currentPage - 1);
+      let end = Math.min(totalPages - 1, currentPage + 1);
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      if (currentPage < totalPages - 2) {
+        pages.push("..."); // Ellipsis after the middle pages
+      }
+
+      pages.push(totalPages); // Always show last page
+    }
+
+    return pages;
+  };
 
   return (
     <div>
@@ -564,6 +613,24 @@ function HourlyReport() {
       {Showlist === true && (
         <div className={currentRole ==='Admin' ? "form-container mrg_tp20" : "form-container"}>
           {/* // <div className="form-container"> */}
+
+          <div className="form-group">          
+          <div className='head_style'>item per page : </div>
+          <select
+          className="item_style"
+          value={rowsPerPage}
+          onChange={handleRowsPerPageChange}
+          >
+            <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+
+          </select>
+          </div>
+
+
            { currentRole === "Admin" && 
             <div className="form-group mrg_bmt10pf">
             <div className='head_style'>Branch Name : </div>
@@ -644,8 +711,8 @@ function HourlyReport() {
               </thead>
 
               <tbody className="list">
-                {filteredData.length > 0 ? (
-                  filteredData.map((item, index) => (
+                {currentRows.length > 0 ? (
+                  currentRows.map((item, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{item.ID}</td>
@@ -697,7 +764,32 @@ function HourlyReport() {
               </tbody>
             </table>
             </center>
+            
           </div>
+          {totalPages > 1 && (
+          <div className="tbale_postion_stick">
+          <button onClick={(event) => goToPage(currentPage - 1,event)} disabled={currentPage === 1} className="pagination_style_reg">
+            Previous
+          </button>
+                {generatePagination().map((page, index) =>
+              page === "..." ? (
+                <span key={index} className="pagination-ellipsis">...</span>
+              ) : (
+                <button
+                  key={index}
+                  onClick={(event) => goToPage(page, event)}
+                  className={`pagination-button ${currentPage === page ? "active" : ""}`}
+                >
+                  {page}
+                </button>
+              )
+            )}
+
+          <button onClick={(event) => goToPage(currentPage + 1,event)} disabled={currentPage === totalPages} className="pagination_style_reg">
+            Next
+          </button>
+        </div>
+          )}
         </form>
       )}
     </div>

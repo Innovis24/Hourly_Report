@@ -120,8 +120,8 @@ const Header = ({ title }) => {
               </div>
 
               <div className="logout cursor_logout" onClick={OpenPopupcard}>
-                <FontAwesomeIcon icon={faSignOut} className="color_logout mtg_top10" />
-                <button className="logout_alignment" >
+                <FontAwesomeIcon icon={faSignOut} className="color_logout mtg_top10 cursor_logout" />
+                <button className="logout_alignment cursor_logout" >
                   Logout
                 </button>
               </div>
