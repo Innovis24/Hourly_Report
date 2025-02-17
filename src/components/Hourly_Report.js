@@ -410,6 +410,7 @@ function HourlyReport() {
     setPettyCash("");
     setAmountTaken("");
     setstartTime("24");
+    setCurrentPage(1)
   };
 
   const handleDelete = async (e, item) => {
@@ -433,6 +434,7 @@ function HourlyReport() {
     } catch (error) {
       console.error("Error deleting record:", error);
     }
+    setCurrentPage(1)
   };
 
 

@@ -33,6 +33,16 @@ function DailyExpenditure() {
   const [recentuser, setrecentuser] = useState();
   const [branchNamelist, setbranchNamelist] = useState("");
 
+   ///pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setrowsPerPage] = useState(5);
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    const currentRows = dataArray.slice(startIndex, endIndex);
+    const totalPages = dataArray.length > 0 ? Math.ceil(dataArray.length / rowsPerPage) : 0;
+
+
+
   useEffect(() => {
     getBranchName();
     const value =  JSON.parse(localStorage.getItem('currentUsername'));
@@ -171,6 +181,7 @@ function DailyExpenditure() {
       console.error("Error deleting record:", error);
       toast.error("Failed to delete record. Please try again.");
     }
+    setCurrentPage(1);
   };
 
   const handleselectDateval = (branch,dateval) => {
@@ -226,16 +237,56 @@ function DailyExpenditure() {
       toast.error("Error fetching daily reports");
     });
   }
-  
+  const goToPage = (page,e) => {
+    e.preventDefault();
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+  const generatePagination = () => {
+    const pages = [];
+    const maxPagesToShow = 5; // Adjust how many pages are visible at once
+
+    if (totalPages <= maxPagesToShow) {
+      // Show all pages if totalPages is small
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1); // Always show first page
+
+      if (currentPage > 3) {
+        pages.push("..."); // Ellipsis before the middle pages
+      }
+
+      let start = Math.max(2, currentPage - 1);
+      let end = Math.min(totalPages - 1, currentPage + 1);
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      if (currentPage < totalPages - 2) {
+        pages.push("..."); // Ellipsis after the middle pages
+      }
+
+      pages.push(totalPages); // Always show last page
+    }
+
+    return pages;
+  };
   const handleListToggle = () => {
     setShowList(!showList);
   };    
-
+  const handleRowsPerPageChange = (e) => {
+    setrowsPerPage(Number(e.target.value));
+    setCurrentPage(1); // Reset to first page when changing rows per page
+  };
  
   return (
     <div>
       <ToastContainer />
-      <div className="scroll-container">
+      <div className="scroll_container1">
       <Home  title="Daily Expenditure"  />
                  
                   { curretnBranchname && 
@@ -255,7 +306,22 @@ function DailyExpenditure() {
                 )}
 
         {showList && (
-        <div className={currentRole ==='Admin' ? "form-container mrg_tp20" : "form-container"}>
+        <div className={currentRole ==='Admin' ? "form-container mrg_tp20" : "form-container mrg_bmt1"}>
+              <div className="form-group">          
+          <div className='head_style'>item per page : </div>
+          <select
+          className="item_style"
+          value={rowsPerPage}
+          onChange={handleRowsPerPageChange}
+          >
+            <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+
+          </select>
+          </div>
            { currentRole === "Admin" && 
                               <div className="form-group mrg_bmt10pf">
                               <div className='head_style'>Branch Name : </div>
@@ -384,8 +450,8 @@ function DailyExpenditure() {
                 </tr>
               </thead>
               <tbody>
-                {dataArray.length > 0 ? (
-                  dataArray.map((entry, index) => (
+                {currentRows  && currentRows.length > 0 ? (
+                  currentRows.map((entry, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{entry.BranchName}</td>
@@ -413,8 +479,33 @@ function DailyExpenditure() {
                 )}
               </tbody>
             </table>
+            {totalPages > 1 && (
+          <div className="sticky_footer">
+          <button onClick={(event) => goToPage(currentPage - 1,event)} disabled={currentPage === 1} className="pagination_style_reg">
+            Previous
+          </button>
+                {generatePagination().map((page, index) =>
+              page === "..." ? (
+                <span key={index} className="pagination-ellipsis">...</span>
+              ) : (
+                <button
+                  key={index}
+                  onClick={(event) => goToPage(page, event)}
+                  className={`pagination-button ${currentPage === page ? "active" : ""}`}
+                >
+                  {page}
+                </button>
+              )
+            )}
+
+          <button onClick={(event) => goToPage(currentPage + 1,event)} disabled={currentPage === totalPages} className="pagination_style_reg">
+            Next
+          </button>
+        </div>
+          )}
             </div>
             </center>
+           
           </div>
         )}
 

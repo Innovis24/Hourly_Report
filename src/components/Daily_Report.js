@@ -38,7 +38,7 @@ function DailyReport() {
     const [branchNamelist, setbranchNamelist] = useState("");
     const [selectBranchname, setselectBranchname] = useState("");
     const [recentuser, setrecentuser] = useState();
-  const [Array, setArray] = useState([
+  const [ArrayVal, setArray] = useState([
     {
       Sno: "",
       Date: "",
@@ -56,6 +56,19 @@ function DailyReport() {
     },
   ]);
    const [curretnBranchname, setcurretnBranchname] = useState();
+
+   ///pagination
+      const [currentPage, setCurrentPage] = useState(1);
+      const [rowsPerPage, setrowsPerPage] = useState(5);
+      const startIndex = (currentPage - 1) * rowsPerPage;
+      const endIndex = startIndex + rowsPerPage;
+      const currentRows = ArrayVal.slice(startIndex, endIndex);
+      const totalPages = ArrayVal.length > 0 ? Math.ceil(ArrayVal.length / rowsPerPage) : 0;
+
+
+
+
+
 
   //useeffect - render every page refresh (1st render this function)
   useEffect(() => {
@@ -256,7 +269,10 @@ function DailyReport() {
       toast.error("Error fetching daily reports");
     });
   }
-
+  const handleRowsPerPageChange = (e) => {
+    setrowsPerPage(Number(e.target.value));
+    setCurrentPage(1); // Reset to first page when changing rows per page
+  };
   const clearBranch=()=>{
     setselectBranchname("")
     handleselectDateval('',selectDate)
@@ -285,7 +301,7 @@ function DailyReport() {
     const formattedDate = Date.toISOString().split('T')[0]; // Format the selected date as 'yyyy-mm-dd'
 
     // Check if the date already exists in the filtered data
-    const filteredval = Array.filter((item) => item.Date === formattedDate);
+    const filteredval = ArrayVal.filter((item) => item.Date === formattedDate);
 
     if (filteredval.length > 0) {
       toast.error("You have already entered a value for this " + formattedDate + '.', {
@@ -308,7 +324,7 @@ function DailyReport() {
     else {
       //if true "create" or false "update"
       if (showsubmit === true) {        //create a new record
-        const duplicateDate = Array.filter((item) => item.Date === formattedDate)
+        const duplicateDate = ArrayVal.filter((item) => item.Date === formattedDate)
         if (duplicateDate.length > 0) {         //Check Already exiting date
           toast.error("This " + formattedDate + " is already exist");
           return;
@@ -334,7 +350,7 @@ function DailyReport() {
           ManagerName:currentuser
         };
         //bind the new array to existing array
-        const updatedData = [...Array, newarray];
+        const updatedData = [...ArrayVal, newarray];
         //sort the array
         const sortedData = updatedData.sort((a, b) => new Date(a.Date) - new Date(b.Date));
 
@@ -394,7 +410,7 @@ function DailyReport() {
         };
 
 
-        const updatedData = [...Array];  // Clone the data array to avoid direct mutation
+        const updatedData = [...ArrayVal];  // Clone the data array to avoid direct mutation
         //check if the given update array in exist or not
         const recordIndex = updatedData.findIndex((record) => record.Date === newArray1.Date);
 
@@ -517,12 +533,49 @@ function DailyReport() {
       setGPayHolder()
       setPettyCash()
   };
- 
+  const goToPage = (page,e) => {
+    e.preventDefault();
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+  const generatePagination = () => {
+    const pages = [];
+    const maxPagesToShow = 5; // Adjust how many pages are visible at once
+
+    if (totalPages <= maxPagesToShow) {
+      // Show all pages if totalPages is small
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1); // Always show first page
+
+      if (currentPage > 3) {
+        pages.push("..."); // Ellipsis before the middle pages
+      }
+
+      let start = Math.max(2, currentPage - 1);
+      let end = Math.min(totalPages - 1, currentPage + 1);
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      if (currentPage < totalPages - 2) {
+        pages.push("..."); // Ellipsis after the middle pages
+      }
+
+      pages.push(totalPages); // Always show last page
+    }
+
+    return pages;
+  };
   return (
     <div>
       <ToastContainer />
      
-      <div className="scroll-container">
+      <div className="scroll_container1">
        
       <Home  title="Daily Report"  />
      
@@ -629,6 +682,21 @@ function DailyReport() {
               {showList === true && (
                 <div className={currentRole ==='Admin' ? "form-container mrg_tp20" : "form-container"}>
                   {/* // <div className="form-container"> */}
+                  <div className="form-group">          
+                      <div className='head_style'>item per page : </div>
+                      <select
+                      className="item_style"
+                      value={rowsPerPage}
+                      onChange={handleRowsPerPageChange}
+                      >
+                        <option value={5}>5</option>
+                          <option value={10}>10</option>
+                          <option value={20}>20</option>
+                          <option value={50}>50</option>
+                          <option value={100}>100</option>
+
+                      </select>
+                      </div>
                    { currentRole === "Admin" && 
                     <div className="form-group mrg_bmt10pf">
                     <div className='head_style'>Branch Name : </div>
@@ -728,8 +796,8 @@ function DailyReport() {
                 {/* <tr></tr> */}
               </thead>
               <tbody>
-                {Array.length > 0 && Array[0].Sno !== '' ? (
-                  Array.map((item, index) => (
+                {currentRows.length > 0 && currentRows[0].Sno !== '' ? (
+                  currentRows.map((item, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{item.BranchName}</td>
@@ -774,6 +842,30 @@ function DailyReport() {
               </tbody>
             </table>
             </center>
+            {totalPages > 1 && (
+          <div className="sticky_footer">
+          <button onClick={(event) => goToPage(currentPage - 1,event)} disabled={currentPage === 1} className="pagination_style_reg">
+            Previous
+          </button>
+                {generatePagination().map((page, index) =>
+              page === "..." ? (
+                <span key={index} className="pagination-ellipsis">...</span>
+              ) : (
+                <button
+                  key={index}
+                  onClick={(event) => goToPage(page, event)}
+                  className={`pagination-button ${currentPage === page ? "active" : ""}`}
+                >
+                  {page}
+                </button>
+              )
+            )}
+
+          <button onClick={(event) => goToPage(currentPage + 1,event)} disabled={currentPage === totalPages} className="pagination_style_reg">
+            Next
+          </button>
+        </div>
+          )}
             </div>
           </div>
         )}

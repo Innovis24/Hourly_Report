@@ -186,6 +186,7 @@ tbody tr:hover {
 
 .padding_top3{
     width: 60%;
+    padding-top: 0% !important;
     justify-content: center; 
     align-items: center; 
     margin: 0; 
@@ -407,10 +408,45 @@ for the input box*/
 
 .scrollit_de
 {
-  margin:20px;
+  margin-top: 14px;
   width: 66%;  
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow-y: scroll;
-  height: 345px;
-      scrollbar-width: thin;
+  height: 385px;
+  scrollbar-width: thin;
+}
+.mrg_bmt1{
+  margin-bottom: -1%;
+}
+.sticky_footer {
+  background: #fff;
+  bottom: 0;
+  box-shadow: 0 -2px 5px #0000001a;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 10px 0 22px;
+  position: -webkit-sticky;
+  position: sticky;
+  text-align: center;
+  width: 100%; /* Make sure the footer takes full width of its parent container */
+  left: 0; /* Align the sticky footer to the left edge */
+}
+@media (max-width: 768px) { /* Adjust the width as needed */
+  .scroll_container1 {
+    height: 94vh;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+  }
+}
+
+@media (min-width: 769px) {
+  .scroll_container1 {
+    overflow-y: hidden; /* Hide scrollbar on larger screens */
+  }
+}
+.scroll_container1 {
+  height: 100vh;
+  overflow-y: scroll;
+  scrollbar-width: thin;
 }
