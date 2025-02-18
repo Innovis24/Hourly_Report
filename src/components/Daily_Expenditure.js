@@ -10,8 +10,8 @@ import { format } from "date-fns";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOut, faUser,faCircleXmark  } from '@fortawesome/free-solid-svg-icons';
-import Home from './Home'
-
+import Home from './Home';
+import {formatDateForDisplay} from '../utlis/services';
 
 const apiUrl = "http://localhost/hourly_report/Daily_Expenditure.php";
 const user_api = "http://localhost/hourly_report/User_Master.php";
@@ -40,7 +40,7 @@ function DailyExpenditure() {
     const endIndex = startIndex + rowsPerPage;
     const currentRows = dataArray.slice(startIndex, endIndex);
     const totalPages = dataArray.length > 0 ? Math.ceil(dataArray.length / rowsPerPage) : 0;
-
+    const totalRecord = dataArray.length;
 
 
   useEffect(() => {
@@ -236,6 +236,7 @@ function DailyExpenditure() {
       console.error("Error fetching daily reports:", error);
       toast.error("Error fetching daily reports");
     });
+    setCurrentPage(1);
   }
   const goToPage = (page,e) => {
     e.preventDefault();
@@ -308,7 +309,7 @@ function DailyExpenditure() {
         {showList && (
         <div className={currentRole ==='Admin' ? "form-container mrg_tp20" : "form-container mrg_bmt1"}>
               <div className="form-group">          
-          <div className='head_style'>item per page : </div>
+          <div className='head_style'>items per page : </div>
           <select
           className="item_style"
           value={rowsPerPage}
@@ -354,7 +355,7 @@ function DailyExpenditure() {
                       <div className="fomr_row">
                       <DatePicker
                         selected={filterDate}
-                        dateFormat="yyyy-MM-dd"
+                        dateFormat="dd-MM-yyyy"
                         className="mrg_top10 custom-datepicker"
                         maxDate={new Date()}
                         id="date-filter"
@@ -384,12 +385,12 @@ function DailyExpenditure() {
             <form onSubmit={handleSubmit}>
               <div className="body_padding3">
                 <label htmlFor="date-picker" style={{ marginRight: "10px" }}>
-                  Select Date:
+                  <b>Select Date:</b>
                 </label>
                 <div>
                 <DatePicker
                   selected={startDate}
-                  dateFormat="yyyy-MM-dd"
+                  dateFormat="dd-MM-yyyy"
                   maxDate={new Date()}
                   onChange={(date) => setStartDate(date)}
                   id="date-picker"
@@ -453,9 +454,10 @@ function DailyExpenditure() {
                 {currentRows  && currentRows.length > 0 ? (
                   currentRows.map((entry, index) => (
                     <tr key={index}>
-                      <td>{index + 1}</td>
+                      {/* <td>{index + 1}</td> */}
+                      <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                       <td>{entry.BranchName}</td>
-                      <td>{entry.Date}</td>
+                      <td>{formatDateForDisplay(entry.Date)}</td>
                       <td>{entry.Itemname}</td>
                       <td>{entry.Amount}</td>
                          <td>
@@ -479,12 +481,16 @@ function DailyExpenditure() {
                 )}
               </tbody>
             </table>
-            {totalPages > 1 && (
+            
           <div className="sticky_footer">
+          {totalPages > 1 && (
           <button onClick={(event) => goToPage(currentPage - 1,event)} disabled={currentPage === 1} className="pagination_style_reg">
             Previous
           </button>
-                {generatePagination().map((page, index) =>
+           )}
+            {totalPages > 1 && (
+              <div>
+                   {generatePagination().map((page, index) =>
               page === "..." ? (
                 <span key={index} className="pagination-ellipsis">...</span>
               ) : (
@@ -497,12 +503,23 @@ function DailyExpenditure() {
                 </button>
               )
             )}
-
+              </div>
+             )}
+          {totalPages > 1 && (
           <button onClick={(event) => goToPage(currentPage + 1,event)} disabled={currentPage === totalPages} className="pagination_style_reg">
             Next
           </button>
-        </div>
           )}
+           <div className="total_style">
+            <div className="total_alignment">
+           Total records : 
+            </div>
+            <div>
+              {totalRecord}
+            </div>
+          </div>
+        </div>
+         
             </div>
             </center>
            

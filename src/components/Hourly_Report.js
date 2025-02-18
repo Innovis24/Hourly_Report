@@ -10,8 +10,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import {  FaEdit, FaTrashAlt } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark  } from '@fortawesome/free-solid-svg-icons';
-import Home from "./Home"
-
+import Home from "./Home";
+import {formatDateForDisplay} from '../utlis/services';
 
 const apiUrl = "http://localhost/hourly_report/hourly_api.php";
 const user_api = "http://localhost/hourly_report/User_Master.php";
@@ -37,7 +37,7 @@ function HourlyReport() {
   const [selectBranchname, setselectBranchname] = useState("");
  const [currentuser, setcurrentuser] = useState();
    const [recentuser, setrecentuser] = useState();
-   const [rowsPerPage, setrowsPerPage] = useState(5);
+   const [rowsPerPage, setrowsPerPage] = useState(2);
    const [curretnBranchname, setcurretnBranchname] = useState();
   const [ArrayVal, setArray] = useState([
     {
@@ -58,7 +58,7 @@ function HourlyReport() {
   const endIndex = startIndex + rowsPerPage;
   const currentRows = filteredData.slice(startIndex, endIndex);
   const totalPages = filteredData.length > 0 ? Math.ceil(filteredData.length / rowsPerPage) : 0;
-
+  const totalRecord = filteredData.length;
 
 
   useEffect(() => {
@@ -169,6 +169,7 @@ function HourlyReport() {
       console.error("Error fetching daily reports:", error);
       toast.error("Error fetching daily reports");
     });
+    setCurrentPage(1);
   }
   const goToPage = (page,e) => {
     e.preventDefault();
@@ -402,6 +403,7 @@ function HourlyReport() {
           setSubmitButton(true);
           gettodayApi(curretnBranchname);
           getapi(curretnBranchname);  // Optional: refresh the data
+          handleselectDateval(selectBranchname,selectDateDD)
         })
         .catch((error) => console.error("Error updating data:", error));        
 
@@ -517,6 +519,7 @@ function HourlyReport() {
     return pages;
   };
 
+  
   return (
     <div>
       <ToastContainer />
@@ -549,7 +552,7 @@ function HourlyReport() {
                   <DatePicker
                     showIcon
                     selected={startDate}
-                    dateFormat="yyyy-MM-dd"
+                    dateFormat="dd-MM-yyyy"
                     minDate={new Date()}
                     maxDate={new Date()}
                     onChange={handleSetTime}
@@ -617,7 +620,7 @@ function HourlyReport() {
           {/* // <div className="form-container"> */}
 
           <div className="form-group">          
-          <div className='head_style'>item per page : </div>
+          <div className='head_style'>items per page : </div>
           <select
           className="item_style"
           value={rowsPerPage}
@@ -665,7 +668,7 @@ function HourlyReport() {
             <div className="fomr_row">
             <DatePicker
               selected={selectDateDD}
-              dateFormat="yyyy-MM-dd"
+              dateFormat="dd-MM-yyyy"
               className="mrg_top10 custom-datepicker"
               maxDate={new Date()}
               onChange={handleSelectDate}
@@ -716,10 +719,11 @@ function HourlyReport() {
                 {currentRows.length > 0 ? (
                   currentRows.map((item, index) => (
                     <tr key={index}>
-                      <td>{index + 1}</td>
+                      {/* <td>{index + 1}</td> */}
+                      <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                       <td>{item.ID}</td>
                       <td>{item.BranchName}</td>
-                      <td>{item.Date}</td>
+                      <td>{formatDateForDisplay(item.Date)}</td>
                       <td>{item.endtime}</td>
                       <td>{item.pettycash}</td>
                       <td>{item.amounttaken}</td>
@@ -768,12 +772,16 @@ function HourlyReport() {
             </center>
             
           </div>
-          {totalPages > 1 && (
+          
           <div className="tbale_postion_stick">
+          {totalPages > 1 && (
           <button onClick={(event) => goToPage(currentPage - 1,event)} disabled={currentPage === 1} className="pagination_style_reg">
             Previous
           </button>
-                {generatePagination().map((page, index) =>
+          )}
+           {totalPages > 1 && (
+                <div>
+                   {generatePagination().map((page, index) =>
               page === "..." ? (
                 <span key={index} className="pagination-ellipsis">...</span>
               ) : (
@@ -786,12 +794,24 @@ function HourlyReport() {
                 </button>
               )
             )}
-
+                </div>
+               
+          )}
+           {totalPages > 1 && (
           <button onClick={(event) => goToPage(currentPage + 1,event)} disabled={currentPage === totalPages} className="pagination_style_reg">
             Next
           </button>
+           )}
+          <div className="total_style">
+            <div className="total_alignment">
+           Total records : 
+            </div>
+            <div>
+              {totalRecord}
+            </div>
+          </div>
         </div>
-          )}
+          
         </form>
       )}
     </div>

@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOut, faUser } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from "react-router-dom"; 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -11,19 +8,12 @@ import Home from './Home'
 
 const apiUrl = "http://localhost/hourly_report/Login.php";
 function UserMaster() {
-    const [currentuser, setcurrentuser] = useState();
-    const [currentuserName, setcurrentuserName] = useState();
     const [Array, setArray] = useState([]);
-    const navigate = useNavigate(); // For go to login page the navigate function
-
+  
     useEffect(() => {
         getapi()
-        const value =  JSON.parse(localStorage.getItem('currentUsername'));
-        const usernameVal = value[0].Name
-        setcurrentuser(usernameVal)
-        const nameParts = usernameVal.charAt(0);
-
-        setcurrentuserName(nameParts);
+        // const value =  JSON.parse(localStorage.getItem('currentUsername'));
+       
     }, []);
 
     const getapi = () => {
@@ -51,6 +41,7 @@ function UserMaster() {
               <thead className="table_header3">
                 <tr>
                   <th>S.No</th>
+                  <th>Name</th>
                   <th>User name</th>
                   <th>User Role</th>
                   <th>Branch name</th>
@@ -63,6 +54,7 @@ function UserMaster() {
                   Array.map((item, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
+                      <td>{item.Name}</td>
                       <td>{item.UserName}</td>
                       <td>{item.UserRole}</td>
                       <td>{item.BranchName ? item.BranchName : '-'}</td>

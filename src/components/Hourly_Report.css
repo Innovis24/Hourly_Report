@@ -506,14 +506,15 @@ select:focus {
 }
 
 .pagination_style_reg {
-  padding: 3px 7px;
-  border: 1px solid #1995AD;
-  background: #1995AD;
-  border-radius: 5px;
+  padding: 5px 10px;
+  background-color: #1995AD;
   color: white;
   border: 1px solid #1995AD;
   border-radius: 5px;
   cursor: pointer;
+  height: 4%;
+  margin-top: 4px;
+
 }
 
 .pagination_style_reg:disabled {
@@ -562,6 +563,7 @@ select:focus {
   border-radius: 8px;
   border: 1px solid #ccc;
   outline: none;
+  cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
 .itemPerpage:focus {
@@ -579,4 +581,13 @@ select:focus {
 .item_style:hover{
   background: none !important;
   border: 1px solid #ccc;
+}
+.total_style{
+  display: flex;
+  margin-top:8px;
+  margin-left: 11px;
+}
+.total_alignment{
+  margin-right: 8px;
+  font-weight: 600;
 }

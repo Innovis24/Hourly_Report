@@ -11,7 +11,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOut, faUser ,faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import Home from './Home'
-
+import {formatDateForDisplay} from '../utlis/services'
 
 const apiUrl = "http://localhost/hourly_report/Daily_Report_api.php";
 const user_api = "http://localhost/hourly_report/User_Master.php";
@@ -64,7 +64,7 @@ function DailyReport() {
       const endIndex = startIndex + rowsPerPage;
       const currentRows = ArrayVal.slice(startIndex, endIndex);
       const totalPages = ArrayVal.length > 0 ? Math.ceil(ArrayVal.length / rowsPerPage) : 0;
-
+      const totalRecord = ArrayVal.length;
 
 
 
@@ -268,6 +268,7 @@ function DailyReport() {
       console.error("Error fetching daily reports:", error);
       toast.error("Error fetching daily reports");
     });
+    setCurrentPage(1);
   }
   const handleRowsPerPageChange = (e) => {
     setrowsPerPage(Number(e.target.value));
@@ -484,27 +485,10 @@ function DailyReport() {
     } catch (error) {
       console.error("Error deleting record:", error);
     }
+    setCurrentPage(1);
   };
 
-  //once delete ,update ,add then call this fetchdata to update the list screen
-  //In fetch data call Get api 
-  // const fetchData = async () => {
-  //   try {
-  //     axios
-  //       .get(apiUrl)
-  //       .then((response) => {
-  //         const formattedDate = format(startDate, "yyyy-MM-dd"); // Format the selected date
-  //         const filtered = response.data.filter((item) => item.Date === formattedDate); // Filter by date
-  //         setFilteredData(filtered);
-
-  //       })
-  //       .catch((error) => console.error("Error fetching users:", error));
-
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-
+ 
   //In this function set the current edit value in input field
   const handleUpdate = (e, item) => {
     e.preventDefault();
@@ -597,7 +581,7 @@ function DailyReport() {
               <div className="body_padding2">
                 <DatePicker
                   selected={startDate}
-                  dateFormat="yyyy-MM-dd"
+                  dateFormat="dd-MM-yyyy"
                   // minDate={new Date()}
                   maxDate={new Date()}
                   onChange={handleDateChange}
@@ -683,7 +667,7 @@ function DailyReport() {
                 <div className={currentRole ==='Admin' ? "form-container mrg_tp20" : "form-container"}>
                   {/* // <div className="form-container"> */}
                   <div className="form-group">          
-                      <div className='head_style'>item per page : </div>
+                      <div className='head_style'>items per page : </div>
                       <select
                       className="item_style"
                       value={rowsPerPage}
@@ -730,7 +714,7 @@ function DailyReport() {
 
                     <DatePicker
                       selected={selectDate}
-                      dateFormat="yyyy-MM-dd"
+                      dateFormat="dd-MM-yyyy"
                       className="mrg_top10 custom-datepicker"
                       maxDate={new Date()}
                       onChange={(date) => handleSelectDate(date)}
@@ -799,9 +783,10 @@ function DailyReport() {
                 {currentRows.length > 0 && currentRows[0].Sno !== '' ? (
                   currentRows.map((item, index) => (
                     <tr key={index}>
-                      <td>{index + 1}</td>
+                      {/* <td>{index + 1}</td> */}
+                      <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                       <td>{item.BranchName}</td>
-                      <td>{item.Date}</td>
+                      <td>{formatDateForDisplay(item.Date)}</td>
                       <td>{item.Day}</td>
                       <td>{item.cashAmount}</td>
                       <td>{item.reportedTo}</td>
@@ -842,12 +827,16 @@ function DailyReport() {
               </tbody>
             </table>
             </center>
-            {totalPages > 1 && (
+            
           <div className="sticky_footer">
+          {totalPages > 1 && (
           <button onClick={(event) => goToPage(currentPage - 1,event)} disabled={currentPage === 1} className="pagination_style_reg">
             Previous
           </button>
-                {generatePagination().map((page, index) =>
+           )}
+             {totalPages > 1 && (
+              <div>
+                 {generatePagination().map((page, index) =>
               page === "..." ? (
                 <span key={index} className="pagination-ellipsis">...</span>
               ) : (
@@ -860,12 +849,24 @@ function DailyReport() {
                 </button>
               )
             )}
-
+              </div>
+             )}
+      {totalPages > 1 && (
           <button onClick={(event) => goToPage(currentPage + 1,event)} disabled={currentPage === totalPages} className="pagination_style_reg">
             Next
           </button>
-        </div>
           )}
+          <div className="total_style">
+            <div className="total_alignment">
+           Total records : 
+            </div>
+            <div>
+              {totalRecord}
+            </div>
+          </div>
+        </div>
+         
+            
             </div>
           </div>
         )}
