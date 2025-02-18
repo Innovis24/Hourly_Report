@@ -7,9 +7,9 @@ import doctorIllustration from '../assets/img_1.jpg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 import './Login.css'
+import {LOGIN_PHP} from '../utlis/services';
 
 
-const apiUrl = "http://localhost/hourly_report/Login.php";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +25,7 @@ function Login() {
   
     const getapi = () => {
       axios
-      .get(apiUrl)
+      .get(LOGIN_PHP)
       .then((response) => {
         setArray(response.data);
         setcurrentuser(response.data)

@@ -11,10 +11,10 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOut, faUser,faCircleXmark  } from '@fortawesome/free-solid-svg-icons';
 import Home from './Home';
-import {formatDateForDisplay} from '../utlis/services';
+import {formatDateForDisplay,DAILY_EXP,USER_MASTER} from '../utlis/services';
 
-const apiUrl = "http://localhost/hourly_report/Daily_Expenditure.php";
-const user_api = "http://localhost/hourly_report/User_Master.php";
+
+
 
 function DailyExpenditure() {
   const [startDate, setStartDate] = useState(new Date());
@@ -65,7 +65,7 @@ function DailyExpenditure() {
       : "?action=getReports";
   
     axios
-      .get(apiUrl + params)
+      .get(DAILY_EXP + params)
       .then((response) => {
         if(branchval){
           const filterbranch = response.data.filter((item)=>item.BranchName === branchval)
@@ -91,7 +91,7 @@ function DailyExpenditure() {
   }
   const getBranchName = () => {
     axios
-      .get(user_api+'?action=getbranchName')
+      .get(USER_MASTER+'?action=getbranchName')
       .then((response) => {
         setbranchNamelist(response.data);
       })
@@ -116,7 +116,7 @@ function DailyExpenditure() {
   // Fetch item list
   const getUserapi = () => {
     axios
-      .get(apiUrl + '?action=getitemlist') // Fetch item list from API
+      .get(DAILY_EXP + '?action=getitemlist') // Fetch item list from API
       .then((response) => {
         const options = response.data.map((item) => ({
           value: item.Itemname, // Value for the dropdown
@@ -149,7 +149,7 @@ function DailyExpenditure() {
     };
 
     axios
-      .post(apiUrl, newEntry)
+      .post(DAILY_EXP, newEntry)
       .then(() => {
         toast.success("Data submitted successfully!");
         fetchApiData(curretnBranchname);
@@ -167,7 +167,7 @@ function DailyExpenditure() {
    // Handle delete operation
    const handleDelete = async (e, item) => {
     try {
-      const response = await axios.delete(apiUrl, {
+      const response = await axios.delete(DAILY_EXP, {
         data: { Sno: Number(item.Sno )}, // Send the Sno for deletion
       });
   
@@ -186,7 +186,7 @@ function DailyExpenditure() {
 
   const handleselectDateval = (branch,dateval) => {
     axios
-    .get(apiUrl + '?action=getReports') // in this place use two api so mention it(action).
+    .get(DAILY_EXP + '?action=getReports') // in this place use two api so mention it(action).
     .then((response) => {
       if(branch && !dateval){
         const filterbranch = response.data.filter((item)=>item.BranchName === branch)

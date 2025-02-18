@@ -3,10 +3,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import "./UserMaster.css";
-import Home from './Home'
+import Home from './Home';
+import {LOGIN_PHP} from '../utlis/services';
 
-
-const apiUrl = "http://localhost/hourly_report/Login.php";
 function UserMaster() {
     const [Array, setArray] = useState([]);
   
@@ -18,7 +17,7 @@ function UserMaster() {
 
     const getapi = () => {
         axios
-          .get(apiUrl) // in this place use two api so mention it(action).
+          .get(LOGIN_PHP) // in this place use two api so mention it(action).
           .then((response) => {
             setArray(response.data);
           })

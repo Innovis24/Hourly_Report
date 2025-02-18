@@ -11,10 +11,9 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOut, faUser ,faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import Home from './Home'
-import {formatDateForDisplay} from '../utlis/services'
+import {formatDateForDisplay,DAILY_REPORT,USER_MASTER} from '../utlis/services'
 
-const apiUrl = "http://localhost/hourly_report/Daily_Report_api.php";
-const user_api = "http://localhost/hourly_report/User_Master.php";
+
 
 function DailyReport() {
   const [startDate, setStartDate] = useState(new Date());
@@ -90,7 +89,7 @@ function DailyReport() {
   //get the owner list via api
   const getUserapi = () => {
     axios
-      .get(apiUrl + '?action=getUsers') // in this place use two api so mention it(action).
+      .get(DAILY_REPORT + '?action=getUsers') // in this place use two api so mention it(action).
       .then((response) => {
         const options = response.data.map((user) => ({
           value: user.UserID,
@@ -114,7 +113,7 @@ function DailyReport() {
   }
   const getBranchName = () => {
     axios
-      .get(user_api+'?action=getbranchName')
+      .get(USER_MASTER+'?action=getbranchName')
       .then((response) => {
         setbranchNamelist(response.data);
       })
@@ -123,7 +122,7 @@ function DailyReport() {
    //get the daily report list via api
   const getapi = (Branch) => {
     axios
-      .get(apiUrl + '?action=getReports') // in this place use two api so mention it(action).
+      .get(DAILY_REPORT + '?action=getReports') // in this place use two api so mention it(action).
       .then((response) => {
         if(Branch){
           const filterbranch = response.data.filter((item)=>item.BranchName === Branch)
@@ -165,7 +164,7 @@ function DailyReport() {
   }
   const handleselectDateval = (branch,dateval) => {
     axios
-    .get(apiUrl + '?action=getReports') // in this place use two api so mention it(action).
+    .get(DAILY_REPORT + '?action=getReports') // in this place use two api so mention it(action).
     .then((response) => {
       if(branch && !dateval){
         const filterbranch = response.data.filter((item)=>item.BranchName === branch)
@@ -378,7 +377,7 @@ function DailyReport() {
         console.log(processedData)
 
         axios
-          .post(apiUrl, processedData)
+          .post(DAILY_REPORT, processedData)
           .then((response) => {
             toast.success("Entry added successfully!");
             getapi(curretnBranchname)
@@ -447,7 +446,7 @@ function DailyReport() {
           //calculate the amount for passing array in api --  end
         console.log(processedData)
         axios
-          .put(apiUrl, processedData)
+          .put(DAILY_REPORT, processedData)
           .then((response) => {
             toast.success("Entry update successfully!");
             getapi(curretnBranchname)
@@ -472,7 +471,7 @@ function DailyReport() {
   const handleDelete = async (e, item) => {
     // alert(item.Date)
     try {
-      const response = await axios.delete(apiUrl, {
+      const response = await axios.delete(DAILY_REPORT, {
         data: { Date: item.Date,BranchName:curretnBranchname },
       });
       if (response.status === 200) {

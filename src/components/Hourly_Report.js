@@ -11,10 +11,8 @@ import {  FaEdit, FaTrashAlt } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark  } from '@fortawesome/free-solid-svg-icons';
 import Home from "./Home";
-import {formatDateForDisplay} from '../utlis/services';
+import {formatDateForDisplay,HOUR_REPORT,USER_MASTER} from '../utlis/services';
 
-const apiUrl = "http://localhost/hourly_report/hourly_api.php";
-const user_api = "http://localhost/hourly_report/User_Master.php";
 
 function HourlyReport() {
   const [startDate, setStartDate] = useState(new Date());
@@ -37,7 +35,7 @@ function HourlyReport() {
   const [selectBranchname, setselectBranchname] = useState("");
  const [currentuser, setcurrentuser] = useState();
    const [recentuser, setrecentuser] = useState();
-   const [rowsPerPage, setrowsPerPage] = useState(2);
+   const [rowsPerPage, setrowsPerPage] = useState(5);
    const [curretnBranchname, setcurretnBranchname] = useState();
   const [ArrayVal, setArray] = useState([
     {
@@ -112,7 +110,7 @@ function HourlyReport() {
   };
   const getapi = (Branch) => {
     axios
-      .get(apiUrl)
+      .get(HOUR_REPORT)
       .then((response) => {
         if(Branch){
           const filterbranch = response.data.filter((item)=>item.BranchName === Branch)
@@ -130,7 +128,7 @@ function HourlyReport() {
 
   const handleselectDateval = (branch,dateval) => {
     axios
-    .get(apiUrl + '?action=getReports') // in this place use two api so mention it(action).
+    .get(HOUR_REPORT + '?action=getReports') // in this place use two api so mention it(action).
     .then((response) => {
       if(branch && !dateval){
         const filterbranch = response.data.filter((item)=>item.BranchName === branch)
@@ -180,7 +178,7 @@ function HourlyReport() {
 
   const getBranchName = () => {
     axios
-      .get(user_api+'?action=getbranchName')
+      .get(USER_MASTER+'?action=getbranchName')
       .then((response) => {
         setbranchNamelist(response.data);
       })
@@ -199,7 +197,7 @@ function HourlyReport() {
     const gettodayApi=(valuebn)=>{
       // settodayFilterData
       axios
-      .get(apiUrl)
+      .get(HOUR_REPORT)
       .then((response) => {
       
           const filterbranch = response.data.filter((item)=>item.BranchName === valuebn)
@@ -332,7 +330,7 @@ function HourlyReport() {
         });
 
         axios
-          .post(apiUrl, processedData)
+          .post(HOUR_REPORT, processedData)
           .then((response) => {
             // alert(response.data.message);
             toast.success("Entry added successfully!");
@@ -396,7 +394,7 @@ function HourlyReport() {
           };
         });
         axios
-        .put(apiUrl, processedData)
+        .put(HOUR_REPORT, processedData)
         .then((response) => {
           toast.success("Entry update successfully!");
           setShowlist(true);
@@ -417,7 +415,7 @@ function HourlyReport() {
 
   const handleDelete = async (e, item) => {
     try {
-      const response = await axios.delete(apiUrl, {
+      const response = await axios.delete(HOUR_REPORT, {
         data: { Date : item.Date,
           ID: item.ID,
           BranchName:curretnBranchname
