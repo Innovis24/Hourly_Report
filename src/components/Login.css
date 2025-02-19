@@ -125,7 +125,7 @@ body {
     display: block;
     width: 30%;
     font-family: 'Roboto', sans-serif;
-    background: #1995AD;
+    background: #88B44E;
     color: #ffffff;
     font-weight: 600;
     font-size: 16px;
@@ -136,6 +136,12 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 20px; /* Added margin to ensure separation */
+  }
+  .loginBtn:focus{
+    outline: none;  
+    border-color: #88B44E;  
+    background-color: #88B44E;  
+
   }
   .logjustify{
     display: flex;

@@ -1,16 +1,7 @@
 *{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;   
 }
-.header_font{
-    height: 60px;
-    color: white;
-    background-color: #1995AD;
-    padding-top: 26px;
-    font-size: 26px;
-    display: flex;
-    flex-direction: column;
-    
-}
+
 .body_padding{
     padding: 25px 25px 25px 25px; 
     font-family: 'Courier New', Courier, monospace;
@@ -387,8 +378,8 @@ select:focus {
 .submitBtn{
   padding: 9px 24px 9px 24px;
   margin-top: 10px;
-  background-color: #1995AD;
-  color: white;
+  background-color: #88B44E;
+  color: black;
   width: auto;
   border-radius: 24px;
   border: none;
@@ -464,7 +455,7 @@ select:focus {
   font-weight: 600;
 }
 .branchName_style{
-  background:  #1995AD;
+  background:  #88B44E;
     padding: 10px;
     color: white;
     margin-top: 12px;

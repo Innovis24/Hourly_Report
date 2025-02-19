@@ -2,17 +2,6 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;   
 }
 
-.header_font{
-    height: 60px;
-    color: white;
-    background-color: #1995AD;
-    padding-top: 26px;
-    font-size: 26px;
-    display: flex;
-    flex-direction: column;
-
-}
-
 /* input tsype */
 
 .form-group {

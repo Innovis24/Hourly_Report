@@ -1,16 +1,6 @@
 *{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;   
 }
-.header_font2{
-    height: 60px;
-    color: white;
-    background-color: #1995AD;
-    padding-top: 26px;
-    font-size: 26px;
-    display: flex;
-    flex-direction: column;
-    
-}
 
 /* extra small device */
 @media (max-width: 576px) {
@@ -369,14 +359,6 @@ tbody tr:hover {
   right: 12px;
 }
 
-.color_logout{
-  color: #1995AD;
-  font-size: 20px;
- }
- .cls_imagecolor{
-  color:black;
-  font-size: 18px;
-}
 .card-contents {
   margin-top: 16px;
 }

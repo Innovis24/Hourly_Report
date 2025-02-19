@@ -2,7 +2,7 @@
 .header_font{
     height: 54px;
     color: white;
-    background-color: #1d8ea5;
+    background-color: #45423f;
     padding-top: 26px;
     font-size: 26px;
     display: flex;
@@ -101,7 +101,7 @@
   .sidebar-toggle-button-open {
     position: absolute;
     left: 10px;
-    background-color: white;
+    background-color: #88B44E;
     color: black;
     padding: 4px 8px;
     border: none;
@@ -156,9 +156,9 @@
     }
 }
 .icon_button {
-    background-color: #ffffff;
-    border: 2px solid #1d8ea5;
-    color: #1d8ea5;
+    background-color: #88B44E;
+    border: 2px solid #88B44E;
+    color: #45423f;
     cursor: pointer;
     outline: none;
     padding:8px 13px 8px 14px;
@@ -231,9 +231,11 @@
     background: none;
     margin-left: 4px;
     font-size: 18px;
+    color: #45423f;
+    font-weight: 700;
   }
   .color_logout{
-   color: #1d8ea5;
+   color: #88B44E;
    font-size: 20px;
   }
   .userName{
@@ -267,8 +269,9 @@
     margin-right: 12px;
   }
   .cls_imagecolor{
-    color:black;
+    color: #45423f;
     font-size: 18px;
+    font-weight: 700;
   }
   .cursor_logout{
     cursor: pointer;
