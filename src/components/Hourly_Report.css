@@ -48,7 +48,7 @@
 }
 
 .table_header {
-  background-color: #1995AD;
+  background-color: #45423f;
   color: white;
   font-size: 16px;
   text-align: left;
@@ -67,26 +67,26 @@ tbody tr:nth-child(even) {
 } 
 
 tbody tr:hover {
-  background-color: #d9f2f8; /* Slight blue highlight on hover */
+  background-color: #88b44e82; /* Slight blue highlight on hover */
   transition: background-color 0.3s ease-in-out;
 }
 
 .iconPaddig {
-  padding: 10px;
+  padding: 7px;
   cursor: pointer;
-  color: #1995AD; /* Matches the theme */
+  color: #45423f; 
   font-size: 18px;
   transition: transform 0.2s, color 0.2s;
 }
 
 .iconPaddig:hover {
-  color: #126e8c; /* Slightly darker color on hover */
-  transform: scale(1.2); /* Slightly enlarge the icon */
+  color: black; 
+  transform: scale(1.2); 
 }
 .center_align {
   text-align: center;
   font-size: 16px;
-  color: #888; /* Subtle gray color for empty state */
+  color: #888; 
 }
 
 
@@ -152,10 +152,7 @@ tbody tr:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
 }
-.iconPaddig{
-  padding: 7px;
-  cursor: pointer;
-}
+
 .HeadingPaddig{
   padding: 7px;
 }
@@ -388,7 +385,7 @@ select:focus {
     transition: background-color 0.3s ease;
 }
 .submitBtn:hover{
-  background-color: black;
+  background-color: #45423f;
 }
 .branch_style{
   width: 160px;
@@ -498,9 +495,9 @@ select:focus {
 
 .pagination_style_reg {
   padding: 5px 10px;
-  background-color: #1995AD;
+  background-color: #45423f;
   color: white;
-  border: 1px solid #1995AD;
+  border: 1px solid #45423f;
   border-radius: 5px;
   cursor: pointer;
   height: 4%;
@@ -514,7 +511,7 @@ select:focus {
 }
 .pagination-button {
   padding: 2px 6px 2px 6px;
-  border: 1px solid #1995AD;
+  border: 1px solid #88B44E;
   background: white;
   color: black;
   font-size: 16px;
@@ -526,13 +523,13 @@ select:focus {
 }
 
 .pagination-button.active {
-  background: #1995AD;
+  background: #88B44E;
   color: white;
   border-radius: 8px;
 }
 
 .pagination-button:hover {
-  background: #1995AD;
+  background: #88B44E;
   color: white;
 }
 
@@ -540,7 +537,9 @@ select:focus {
   cursor: not-allowed;
   opacity: 0.5;
 }
-
+.choco_clr{
+  color: #45423f;
+}
 .pagination-ellipsis {
   margin: 0 10px;
   font-weight: bold;

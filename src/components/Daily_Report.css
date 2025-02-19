@@ -75,14 +75,6 @@
     font-size: 14px;
 }
 
-.table_header {
-  background-color: #1995AD;
-  color: white;
-  font-size: 16px;
-  text-align: left;
-  font-weight: bold;
-}
-
   th, td {
    
     text-align: left; 
@@ -94,23 +86,7 @@ tbody tr:nth-child(even) {
   background-color: #f2f2f2;
 } 
 
-tbody tr:hover {
-  background-color: #d9f2f8; 
-  transition: background-color 0.3s ease-in-out;
-}
 
-.iconPaddig {
-  padding: 10px;
-  cursor: pointer;
-  color: #1995AD; /* Matches the theme */
-  font-size: 18px;
-  transition: transform 0.2s, color 0.2s;
-}
-
-.iconPaddig:hover {
-  color: #126e8c; 
-  transform: scale(1.2); 
-}
 .center_align {
   text-align: center;
   font-size: 16px;
@@ -156,10 +132,7 @@ tbody tr:hover {
     height: 385px;
 
 }
-.iconPaddig{
-  padding: 7px;
-  cursor: pointer;
-}
+
 .HeadingPaddig{
   padding: 7px;
 }
@@ -280,11 +253,6 @@ table {
 tbody tr:nth-child(even) {
   background-color: #f2f2f2;
 } 
-
-tbody tr:hover {
-  background-color: #d9f2f8; /* Slight blue highlight on hover */
-  transition: background-color 0.3s ease-in-out;
-}
 
 /* Table top Input Box */
 .card2 {

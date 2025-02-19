@@ -29,7 +29,7 @@
 .sidebar {
     width: 250px;
     height: 100vh;
-    background-color: #1d8ea5;
+    background-color: #88B44E;
     color: white;
     position: fixed;
     top: 0;
@@ -78,7 +78,7 @@
   }
   
   .sidebar-menu a:hover {
-    background-color: #aad3db;
+    background-color: #45423f8f;
   }
   
   .sidebar-menu li:not(:last-child) {
@@ -171,6 +171,7 @@
   }
   .list_icon{
     margin-right:10px;
+    color: #45423f;
   }
   .popup_btn{
     display: flex;

@@ -60,23 +60,6 @@ tbody tr:nth-child(even) {
   background-color: #f2f2f2;
 } 
 
-tbody tr:hover {
-  background-color: #d9f2f8; 
-  transition: background-color 0.3s ease-in-out;
-}
-
-.iconPaddig {
-  padding: 10px;
-  cursor: pointer;
-  color: #1995AD; /* Matches the theme */
-  font-size: 18px;
-  transition: transform 0.2s, color 0.2s;
-}
-
-.iconPaddig:hover {
-  color: #126e8c; 
-  transform: scale(1.2); 
-}
 .center_align {
   text-align: center;
   font-size: 16px;
@@ -162,10 +145,7 @@ tbody tr:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
 }
-.iconPaddig{
-  padding: 7px;
-  cursor: pointer;
-}
+
 .HeadingPaddig{
   padding: 7px;
 }
@@ -232,9 +212,9 @@ tbody tr:hover {
   
   /* Customizing the select dropdown */
   select {
-    background-color:  #1995AD;  
+    background-color:  #613a19;  
     color: #333;  
-    border: 1px solid #1995AD; 
+    border: 1px solid #613a19; 
     border-radius: 5px;  
     padding: 8px 12px;  
     font-size: 14px;  
@@ -243,15 +223,15 @@ tbody tr:hover {
   
   
   select:hover {
-    background-color: #126e8c;  
-    border-color: #126e8c;  
+    background-color: #613a19;  
+    border-color: #613a19;  
   }
   
   
   select:focus {
     outline: none;  
-    border-color: #1995AD;  
-    background-color: #126e8c;  
+    border-color: #613a19;  
+    background-color: #613a19;  
    
   }
   .app-container {
@@ -287,12 +267,6 @@ tbody tr:hover {
   tbody tr:nth-child(even) {
     background-color: #f2f2f2;
   } 
-  
-  tbody tr:hover {
-    background-color: #d9f2f8; /* Slight blue highlight on hover */
-    transition: background-color 0.3s ease-in-out;
-  }
-  
   
   /* Table top Input Box */
 .card3 {
