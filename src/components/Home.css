@@ -180,8 +180,8 @@
   }
   .btn_noClr{
     background-color: white;
-    color: #1d8ea5;
-    border: 1px solid #1d8ea5;
+    color: #88B44E;
+    border: 1px solid #88B44E;
     border-radius: 5px;
     padding: 7px;
     font-size: 18px;
@@ -190,9 +190,9 @@
     cursor: pointer;
   }
   .btn_yesclr{
-    background-color: #1d8ea5;
+    background-color: #88B44E;
     color:white;
-    border: 1px solid #1d8ea5 !important;
+    border: 1px solid #88B44E !important;
     border-radius: 5px;
     padding: 7px;
     cursor: pointer;
