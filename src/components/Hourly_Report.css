@@ -379,7 +379,7 @@ select:focus {
   padding: 9px 24px 9px 24px;
   margin-top: 10px;
   background-color: #88B44E;
-  color: black;
+  color: white;
   width: auto;
   border-radius: 24px;
   border: none;
@@ -388,7 +388,7 @@ select:focus {
     transition: background-color 0.3s ease;
 }
 .submitBtn:hover{
-  background-color: #126e8c;
+  background-color: black;
 }
 .branch_style{
   width: 160px;
